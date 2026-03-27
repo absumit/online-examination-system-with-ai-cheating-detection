@@ -67,6 +67,14 @@ const newschema = new Schema({
     createdAt:{
         type:Date,
         default:Date.now
+    },
+    tabSwitches:{
+        type:Number,
+        default:0
+    },
+    isFlaggedSuspicious:{
+        type:Boolean,
+        default:false
     }
 })
 

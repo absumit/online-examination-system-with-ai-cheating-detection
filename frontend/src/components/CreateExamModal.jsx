@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createExam } from '../utils/api';
+import { createExam, importExamQuestions } from '../utils/api';
 
 function CreateExamModal({ onClose, onExamCreated }) {
   const [formData, setFormData] = useState({
@@ -15,6 +15,7 @@ function CreateExamModal({ onClose, onExamCreated }) {
     { questionText: '', options: ['', '', '', ''], correctAnswer: '' }
   ]);
   const [loading, setLoading] = useState(false);
+  const [importLoading, setImportLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleFormChange = (e) => {
@@ -42,6 +43,58 @@ function CreateExamModal({ onClose, onExamCreated }) {
     setQuestions(questions.filter((_, i) => i !== index));
   };
 
+  const handleImportQuestions = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    setError('');
+    setImportLoading(true);
+
+    try {
+      const response = await importExamQuestions(file);
+      const importedQuestions = response.data?.questions || [];
+
+      if (!importedQuestions.length) {
+        setError('No questions found in the uploaded file');
+        return;
+      }
+
+      const normalizedQuestions = importedQuestions
+        .map((q) => {
+          const options = (q.options || [])
+            .map((opt) => String(opt || '').trim())
+            .filter(Boolean)
+            .slice(0, 4);
+
+          while (options.length < 4) {
+            options.push('');
+          }
+
+          return {
+            questionText: String(q.questionText || '').trim(),
+            options,
+            correctAnswer: ''
+          };
+        })
+        .filter((q) => q.questionText && q.options.filter(Boolean).length >= 2);
+
+      if (!normalizedQuestions.length) {
+        setError('Uploaded file did not contain valid multiple-choice questions');
+        return;
+      }
+
+      setQuestions(normalizedQuestions);
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || err.response?.data || 'Failed to import questions';
+      setError(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
+    } finally {
+      setImportLoading(false);
+      e.target.value = '';
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -52,7 +105,7 @@ function CreateExamModal({ onClose, onExamCreated }) {
         ...formData,
         questions: questions.map(q => ({
           questionText: q.questionText,
-          options: q.options.filter(o => o),
+          options: q.options.map(o => o.trim()).filter(o => o),
           correctAnswer: q.correctAnswer,
           marks: Math.floor(formData.totalMarks / questions.length)
         }))
@@ -164,7 +217,19 @@ function CreateExamModal({ onClose, onExamCreated }) {
           </div>
 
           <div className="border-t pt-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Questions</h3>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+              <h3 className="text-xl font-bold text-gray-800">Questions</h3>
+              <label className="inline-flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg transition cursor-pointer">
+                {importLoading ? 'Importing...' : 'Import from PDF/DOCX'}
+                <input
+                  type="file"
+                  accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  onChange={handleImportQuestions}
+                  className="hidden"
+                  disabled={importLoading || loading}
+                />
+              </label>
+            </div>
             {questions.map((q, qIndex) => (
               <div key={qIndex} className="mb-6 p-4 bg-gray-50 rounded-lg">
                 <div className="flex justify-between items-center mb-3">

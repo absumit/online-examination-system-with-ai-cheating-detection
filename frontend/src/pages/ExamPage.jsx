@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { startExam, submitAnswer, submitExam, getExamDetails } from '../utils/api';
+import api from '../utils/api';
 
 function ExamPage() {
   const { examId } = useParams();
@@ -50,6 +51,31 @@ function ExamPage() {
   useEffect(() => {
     initializeExam();
   }, [initializeExam]);
+
+  // Detect tab switch/minimize
+  useEffect(() => {
+    if (!attemptId) return;
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // User switched away from exam tab
+        api.post(`/student/exam/attempt/${attemptId}/flag-tab-switch`)
+          .then(response => {
+            if (response.data.autoSubmitted) {
+              // Auto-submitted due to threshold exceeded
+              alert('⚠️ Suspicious activity detected. Your exam has been auto-submitted.');
+              setTimeout(() => {
+                navigate(`/student/result/${attemptId}`);
+              }, 1000);
+            }
+          })
+          .catch(err => console.error('Failed to flag tab switch:', err));
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [attemptId, navigate]);
 
   useEffect(() => {
     if (timeLeft <= 0 || !attemptId) return;

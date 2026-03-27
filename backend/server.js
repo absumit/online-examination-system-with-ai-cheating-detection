@@ -6,7 +6,7 @@ require('dotenv').config();
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 
-// Import routes
+
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const studentRoutes = require('./routes/student');
@@ -24,17 +24,14 @@ app.use(cors({
 
 
 
-// ============= ROUTE SETUP =============
-// Auth Routes (no authentication needed)
 app.use('/auth', authRoutes);
 
-// Admin Routes (authentication + admin role required)
+
 app.use('/admin', verifyToken, authorizeRole(['admin']), adminRoutes);
 
-// Student Routes (authentication + student role required)
+
 app.use('/student', verifyToken, authorizeRole(['student']), studentRoutes);
 
-// ============= START SERVER =============
 
 const initilizeconnection=async()=>{
 

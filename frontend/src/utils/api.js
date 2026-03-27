@@ -15,6 +15,15 @@ export const getCurrentUser = () => apiClient.get('/auth/me');
 
 // Admin APIs
 export const createExam = (examData) => apiClient.post('/admin/exam/create', examData);
+export const importExamQuestions = (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  return apiClient.post('/admin/exam/questions/import', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+};
 export const getAdminExams = () => apiClient.get('/admin/exams');
 export const updateExam = (examId, examData) => apiClient.put(`/admin/exam/${examId}`, examData);
 export const publishExam = (examId, publishData) => apiClient.put(`/admin/exam/${examId}/publish`, publishData);

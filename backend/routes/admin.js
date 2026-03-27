@@ -2,6 +2,92 @@ const express = require('express');
 const router = express.Router();
 const exam = require("../models/exam");
 const exam_attempt = require("../models/exam_attempt");
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs/promises');
+const fsSync = require('fs');
+const os = require('os');
+const { spawn } = require('child_process');
+
+const uploadDir = path.resolve(__dirname, '../uploads');
+if (!fsSync.existsSync(uploadDir)) {
+  fsSync.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => {
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
+  }
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    const allowed = ['.pdf', '.docx'];
+    const ext = path.extname(file.originalname || '').toLowerCase();
+    if (!allowed.includes(ext)) {
+      return cb(new Error('Only PDF and DOCX files are supported'));
+    }
+    cb(null, true);
+  }
+});
+
+const runQuestionParser = (inputFilePath, outputFilePath) => {
+  return new Promise((resolve, reject) => {
+    const pythonExecutable = process.env.PYTHON_PATH || 'python';
+    const parserScriptPath = path.resolve(__dirname, '../../pdfreader/reader.py');
+    const args = [parserScriptPath, inputFilePath, '--json-output', outputFilePath];
+    const child = spawn(pythonExecutable, args, { cwd: path.resolve(__dirname, '../../pdfreader') });
+
+    let stderr = '';
+    child.stderr.on('data', (chunk) => {
+      stderr += chunk.toString();
+    });
+
+    child.on('error', (err) => {
+      reject(new Error(`Failed to start parser: ${err.message}`));
+    });
+
+    child.on('close', (code) => {
+      if (code !== 0) {
+        return reject(new Error(stderr || `Parser exited with code ${code}`));
+      }
+      resolve();
+    });
+  });
+};
+
+const normalizeImportedQuestions = (parsedQuestions) => {
+  if (!Array.isArray(parsedQuestions)) {
+    return [];
+  }
+
+  return parsedQuestions
+    .map((item) => {
+      const rawQuestion = String(item.question || item.questionText || '').trim();
+      const rawOptions = item.options;
+      let options = [];
+
+      if (Array.isArray(rawOptions)) {
+        options = rawOptions;
+      } else if (rawOptions && typeof rawOptions === 'object') {
+        options = Object.values(rawOptions);
+      }
+
+      const normalizedOptions = options
+        .map((opt) => String(opt || '').trim())
+        .filter(Boolean);
+
+      return {
+        questionText: rawQuestion,
+        options: normalizedOptions,
+        correctAnswer: ''
+      };
+    })
+    .filter((q) => q.questionText && q.options.length >= 2);
+};
 
 // Middleware - Authentication & Authorization (will be applied in server.js)
 
@@ -33,6 +119,51 @@ router.post('/exam/create', async (req, res) => {
   catch (err) {
     res.status(500).send("Error creating exam: " + err.message);
   }
+});
+
+// Import Questions from PDF/DOCX using python parser (Admin only)
+router.post('/exam/questions/import', (req, res) => {
+  upload.single('file')(req, res, async (uploadErr) => {
+    if (uploadErr) {
+      return res.status(400).json({ message: uploadErr.message || 'Invalid upload request' });
+    }
+
+    const uploadedFilePath = req.file?.path;
+    const outputJsonPath = path.join(os.tmpdir(), `questions-${Date.now()}-${Math.round(Math.random() * 1e9)}.json`);
+
+    if (!uploadedFilePath) {
+      return res.status(400).json({ message: 'Please upload a PDF or DOCX file' });
+    }
+
+    try {
+      await runQuestionParser(uploadedFilePath, outputJsonPath);
+
+      const jsonContent = await fs.readFile(outputJsonPath, 'utf-8');
+      const parsedQuestions = JSON.parse(jsonContent);
+      const questions = normalizeImportedQuestions(parsedQuestions);
+
+      if (!questions.length) {
+        return res.status(400).json({
+          message: 'No valid questions were found in the uploaded file'
+        });
+      }
+
+      return res.json({
+        message: 'Questions imported successfully',
+        count: questions.length,
+        questions
+      });
+    } catch (err) {
+      return res.status(500).json({
+        message: `Failed to import questions: ${err.message}`
+      });
+    } finally {
+      if (uploadedFilePath) {
+        await fs.unlink(uploadedFilePath).catch(() => {});
+      }
+      await fs.unlink(outputJsonPath).catch(() => {});
+    }
+  });
 });
 
 // Get All Exams Created by Admin

@@ -3,9 +3,9 @@ const router = express.Router();
 const exam = require("../models/exam");
 const exam_attempt = require("../models/exam_attempt");
 
-// Middleware - Authentication & Authorization (will be applied in server.js)
 
-// Get All Published Exams (Students)
+
+
 router.get('/exams', async (req, res) => {
   try {
     const publishedExams = await exam.find({ isPublished: true, status: 'Active' }).select('-questions');
@@ -16,7 +16,7 @@ router.get('/exams', async (req, res) => {
   }
 });
 
-// Get Specific Exam for Taking (Student)
+
 router.get('/exam/:examId', async (req, res) => {
   try {
     const examId = req.params.examId;
@@ -30,13 +30,12 @@ router.get('/exam/:examId', async (req, res) => {
       return res.status(403).send("This exam is not available");
     }
 
-    // Check attempt limit
+  
     const attemptCount = await exam_attempt.countDocuments({ examId, studentId: req.user._id });
     if (attemptCount >= examData.maxAttempts) {
       return res.status(403).send("You have exhausted your attempt limit for this exam");
     }
 
-    // Return exam without correct answers
     const safeExam = {
       ...examData.toObject(),
       questions: examData.questions.map(q => ({
@@ -54,7 +53,6 @@ router.get('/exam/:examId', async (req, res) => {
   }
 });
 
-// Start Exam / Create Exam Attempt (Student)
 router.post('/exam/:examId/start', async (req, res) => {
   try {
     const examId = req.params.examId;
@@ -68,13 +66,12 @@ router.post('/exam/:examId/start', async (req, res) => {
       return res.status(403).send("This exam is not available");
     }
 
-    // Check attempt limit
+   
     const attemptCount = await exam_attempt.countDocuments({ examId, studentId: req.user._id });
     if (attemptCount >= examData.maxAttempts) {
       return res.status(403).send("You have exhausted your attempt limit for this exam");
     }
 
-    // Check for ongoing attempt
     const ongoingAttempt = await exam_attempt.findOne({
       examId,
       studentId: req.user._id,
@@ -265,6 +262,79 @@ router.get('/exam/attempt/:attemptId/result', async (req, res) => {
   }
   catch (err) {
     res.status(500).send("Error fetching result: " + err.message);
+  }
+});
+
+// Flag Tab Switch (Student)
+router.post('/exam/attempt/:attemptId/flag-tab-switch', async (req, res) => {
+  try {
+    const attemptId = req.params.attemptId;
+    const threshold = parseInt(process.env.TAB_SWITCH_THRESHOLD) || 3;
+
+    const attempt = await exam_attempt.findByIdAndUpdate(
+      attemptId,
+      { $inc: { tabSwitches: 1 } },
+      { new: true }
+    );
+
+    if (!attempt) {
+      return res.status(404).send("Attempt not found");
+    }
+
+    // If threshold exceeded, mark suspicious and auto-submit exam
+    if (attempt.tabSwitches > threshold && !attempt.isFlaggedSuspicious) {
+      attempt.isFlaggedSuspicious = true;
+
+      const examData = await exam.findById(attempt.examId);
+
+      // Calculate marks and results
+      let totalMarksObtained = 0;
+      let correctCount = 0;
+      let wrongCount = 0;
+      let unansweredCount = 0;
+
+      attempt.answers.forEach(answer => {
+        if (!answer.selectedAnswer) {
+          unansweredCount++;
+        } else if (answer.selectedAnswer === answer.correctAnswer) {
+          correctCount++;
+          totalMarksObtained += answer.marks || 0;
+          answer.isCorrect = true;
+          answer.marksObtained = answer.marks || 0;
+        } else {
+          wrongCount++;
+          answer.isCorrect = false;
+          answer.marksObtained = 0;
+        }
+      });
+
+      const percentage = (totalMarksObtained / examData.totalMarks) * 100;
+      const isPassed = totalMarksObtained >= examData.passingScore;
+
+      // Auto-submit exam
+      attempt.endTime = new Date();
+      attempt.totalMarksObtained = totalMarksObtained;
+      attempt.correctAnswers = correctCount;
+      attempt.wrongAnswers = wrongCount;
+      attempt.unansweredQuestions = unansweredCount;
+      attempt.percentage = percentage.toFixed(2);
+      attempt.isPassed = isPassed;
+      attempt.status = 'Graded';
+      attempt.totalTime = Math.floor((attempt.endTime - attempt.startTime) / 1000);
+
+      await attempt.save();
+
+      return res.send({ 
+        autoSubmitted: true, 
+        message: 'Suspicious activity detected. Exam auto-submitted.',
+        tabSwitches: attempt.tabSwitches 
+      });
+    }
+
+    res.send({ success: true, tabSwitches: attempt.tabSwitches });
+  }
+  catch (err) {
+    res.status(500).send("Error flagging tab switch: " + err.message);
   }
 });
 
