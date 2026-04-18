@@ -1,0 +1,194 @@
+[
+  {
+    "question_number": 1,
+    "question": "The average of 5 numbers is 34. The average of the first two numbers is 32, and the average of the last two numbers is 36. What is the third number?",
+    "options": {
+      "A": "34",
+      "B": "36",
+      "C": "38",
+      "D": "40"
+    }
+  },
+  {
+    "question_number": 2,
+    "question": "The average age of a group of 20 students is 18 years. If the teacher's age is added, the average becomes 19 years. What is the age of the teacher?",
+    "options": {
+      "A": "38",
+      "B": "39",
+      "C": "40",
+      "D": "41"
+    }
+  },
+  {
+    "question_number": 3,
+    "question": "The average of 8 numbers is 16. The average of the first 5 numbers is 12, and the average of the last 5 numbers is 18. What is the fifth number?",
+    "options": {
+      "A": "20",
+      "B": "21",
+      "C": "22",
+      "D": "23"
+    }
+  },
+  {
+    "question_number": 4,
+    "question": "The average of 5 consecutive numbers is 45. What is the largest of these four numbers?",
+    "options": {
+      "A": "47",
+      "B": "48",
+      "C": "49",
+      "D": "50"
+    }
+  },
+  {
+    "question_number": 5,
+    "question": "The average of 10 numbers is 70. If one of the numbers is 90, what is the sum of the remaining 9 numbers?",
+    "options": {
+      "A": "610",
+      "B": "640",
+      "C": "650",
+      "D": "660"
+    }
+  },
+  {
+    "question_number": 6,
+    "question": "The average of 11 consecutive integers is 60. What is the first number?",
+    "options": {
+      "A": "55",
+      "B": "58",
+      "C": "59",
+      "D": "60"
+    }
+  },
+  {
+    "question_number": 7,
+    "question": "The average of 15 numbers is 35. If the first 10 numbers have an average of 33, what is the average of the remaining 5 numbers?",
+    "options": {
+      "A": "36",
+      "B": "39",
+      "C": "38",
+      "D": "40"
+    }
+  },
+  {
+    "question_number": 8,
+    "question": "The average of 6 numbers is 25. If one of the numbers is 40, what is the average of the remaining 5 numbers?",
+    "options": {
+      "A": "22",
+      "B": "23",
+      "C": "24",
+      "D": "25"
+    }
+  },
+  {
+    "question_number": 9,
+    "question": "The average of 5 consecutive numbers is 50. What is the sum of these 5 numbers?",
+    "options": {
+      "A": "240",
+      "B": "250",
+      "C": "260",
+      "D": "270"
+    }
+  },
+  {
+    "question_number": 10,
+    "question": "The average of 6 numbers is 14. If two numbers are removed, the average of the remaining numbers is 15. What is the average of the two removed numbers?",
+    "options": {
+      "A": "12",
+      "B": "13",
+      "C": "14",
+      "D": "15"
+    }
+  },
+  {
+    "question_number": 11,
+    "question": "The average of 5 numbers is 72. If the largest number is 90, what is the sum of the other 4 numbers?",
+    "options": {
+      "A": "288",
+      "B": "276",
+      "C": "268",
+      "D": "260"
+    }
+  },
+  {
+    "question_number": 12,
+    "question": "The average of 7 consecutive numbers is 21. What is the largest of these numbers?",
+    "options": {
+      "A": "23",
+      "B": "24",
+      "C": "25",
+      "D": "26"
+    }
+  },
+  {
+    "question_number": 13,
+    "question": "The average age of the boys in a class is 16 years and that of the girls is 15 years. The average age for the whole class is Ans.D",
+    "options": {
+      "A": "15 years",
+      "B": "15.5 years",
+      "C": "16 years",
+      "D": "Cannot be computed with the given information"
+    }
+  },
+  {
+    "question_number": 14,
+    "question": "The average of 9 numbers is 18. The sum of the first 5 numbers is 90. What is the sum of the remaining 4 numbers?",
+    "options": {
+      "A": "72",
+      "B": "68",
+      "C": "66",
+      "D": "64"
+    }
+  },
+  {
+    "question_number": 15,
+    "question": "The average of 5 numbers is 48. The average of the first two numbers is 40, and the average of the last two numbers is 50. What is the middle number?",
+    "options": {
+      "A": "48",
+      "B": "47",
+      "C": "45",
+      "D": "46"
+    }
+  },
+  {
+    "question_number": 22,
+    "question": "The average marks in Science subject of a class of 20 students is 68. If the marks of two students were misread as 48 and 65 of the actual marks 72 and 61 respectively, then what would be the correct average ?",
+    "options": {
+      "A": "68.5",
+      "B": "69.5",
+      "C": "",
+      "D": "70"
+    }
+  },
+  {
+    "question_number": 23,
+    "question": "The mean of 30 values was 150. It was detected on rechecking that one value 165 was wrongly copied as 135 for the computation of the mean. Find the correct mean.",
+    "options": {
+      "A": "152",
+      "B": "149",
+      "C": "",
+      "D": "None of these"
+    }
+  },
+  {
+    "question_number": 24,
+    "question": "he average weight of 50 balls is 5 gm. If the weight of the bag be included the average weight increases by 0.05 gm. What is the weight of the bag?",
+    "options": {
+      "A": "6.05",
+      "B": "5.05",
+      "C": "7.05",
+      "D": "",
+      "E": "None of these"
+    }
+  },
+  {
+    "question_number": 25,
+    "question": "The average marks in English subject of a class of 24 students is 56. If the marks of three students were misread as 44, 45 and 61 of the actual marks 48, 59 and 67 respectively, then what would be the correct average?",
+    "options": {
+      "A": "57.5",
+      "B": "59",
+      "C": "56.5",
+      "D": "58",
+      "E": ""
+    }
+  }
+]

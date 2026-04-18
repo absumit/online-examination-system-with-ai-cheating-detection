@@ -1,0 +1,412 @@
+[
+  {
+    "question_number": 1,
+    "question": "In a certain code, \"RATIONAL’ is written as ‘ARITNOJA’. How would “TRIBAL” be written in that code?",
+    "options": {
+      "A": "RTIALB",
+      "B": "TIRALB",
+      "C": "RTBILA",
+      "D": "TIRBAL"
+    }
+  },
+  {
+    "question_number": 2,
+    "question": "In a certain code language ‘low nas his Ploy’ means ‘she is bringing coffee’; ‘Wis sat low play means ‘he is bringing milk’; and ‘sat limn as means ‘milk and coffee’. Which word in that language means ‘he’ ?",
+    "options": {
+      "A": "Sat",
+      "B": "Wis",
+      "C": "Ploy",
+      "D": "Lew"
+    }
+  },
+  {
+    "question_number": 3,
+    "question": "TENANT",
+    "options": {
+      "A": "956169",
+      "B": "1962473",
+      "C": "352123",
+      "D": "312723"
+    },
+    "instruction": "DIRECTIONS (Qs. 3 to 7) : Read the information given below, and answer the questions that follow. If in a certain language, ENTRY is coded as 12345 and STEADY is coded as 93178S, then state which is the correct code for each of the given words."
+  },
+  {
+    "question_number": 4,
+    "question": "NEATNESS",
+    "options": {
+      "A": "25196577",
+      "B": "21732199",
+      "C": "21362199",
+      "D": "21823698"
+    },
+    "instruction": "DIRECTIONS (Qs. 3 to 7) : Read the information given below, and answer the questions that follow. If in a certain language, ENTRY is coded as 12345 and STEADY is coded as 93178S, then state which is the correct code for each of the given words."
+  },
+  {
+    "question_number": 5,
+    "question": "SEDATE",
+    "options": {
+      "A": "918731",
+      "B": "954185",
+      "C": "814195",
+      "D": "614781"
+    },
+    "instruction": "DIRECTIONS (Qs. 3 to 7) : Read the information given below, and answer the questions that follow. If in a certain language, ENTRY is coded as 12345 and STEADY is coded as 93178S, then state which is the correct code for each of the given words."
+  },
+  {
+    "question_number": 6,
+    "question": "ARREST",
+    "options": {
+      "A": "744589",
+      "B": "744193",
+      "C": "166479",
+      "D": "745194"
+    },
+    "instruction": "DIRECTIONS (Qs. 3 to 7) : Read the information given below, and answer the questions that follow. If in a certain language, ENTRY is coded as 12345 and STEADY is coded as 93178S, then state which is the correct code for each of the given words."
+  },
+  {
+    "question_number": 7,
+    "question": "ENDEAR",
+    "options": {
+      "A": "524519",
+      "B": "174189",
+      "C": "128174",
+      "D": "124179"
+    },
+    "instruction": "DIRECTIONS (Qs. 3 to 7) : Read the information given below, and answer the questions that follow. If in a certain language, ENTRY is coded as 12345 and STEADY is coded as 93178S, then state which is the correct code for each of the given words."
+  },
+  {
+    "question_number": 8,
+    "question": "In a certain code, BREAKTHROUGH is written as EAOUHRBRGHKT. How is DISTRIBUTION written is that code ?",
+    "options": {
+      "A": "TISBUONDIRI",
+      "B": "STTIBUONRIDI",
+      "C": "STTIBUDIONRI",
+      "D": "RISTTIBUDION"
+    }
+  },
+  {
+    "question_number": 9,
+    "question": "If E = 5, PEN = 35, then PAGE=?",
+    "options": {
+      "A": "27",
+      "B": "28",
+      "C": "29",
+      "D": "36"
+    }
+  },
+  {
+    "question_number": 10,
+    "question": "In certain code language ‘UNIVERSITY’ is written as ‘VNJVFRTIUY’. Following the same code how would you write ‘SECRETARY’ ?",
+    "options": {
+      "A": "TEDRFTBRZ",
+      "B": "TFERFTBRY",
+      "C": "SFCSEUASY",
+      "D": "TEDRFTBRZ"
+    }
+  },
+  {
+    "question_number": 11,
+    "question": "POND is written as RSTL, HEAR may be written as",
+    "options": {
+      "A": "JKLZ",
+      "B": "GHIZ",
+      "C": "GHIJ",
+      "D": "JICZ"
+    }
+  },
+  {
+    "question_number": 12,
+    "question": "In a certain code PORTUGESE is written as ESEGUTROP, MALAYALAM will be written in the same code as:",
+    "options": {
+      "A": "MALAYALAM",
+      "B": "MALYALAM",
+      "C": "MALAYALM",
+      "D": "MALAYLAM"
+    }
+  },
+  {
+    "question_number": 13,
+    "question": "If DRIVER = 7 and CAR = 4, then BOOK = ?",
+    "options": {
+      "A": "5",
+      "B": "8",
+      "C": "12",
+      "D": "14"
+    },
+    "instruction": "DIRECTIONS (Qs. 13 to 15) : Words are coded in a particular way in terms of numbers. Find the code of the word given in each of the following questions:"
+  },
+  {
+    "question_number": 14,
+    "question": "If SHE = 32 and HE =13 then, WE =?",
+    "options": {
+      "A": "20",
+      "B": "25",
+      "C": "28",
+      "D": "30"
+    },
+    "instruction": "DIRECTIONS (Qs. 13 to 15) : Words are coded in a particular way in terms of numbers. Find the code of the word given in each of the following questions:"
+  },
+  {
+    "question_number": 15,
+    "question": "If FORM is coded as 5-14-17-12 then DATE will be coded as-",
+    "options": {
+      "A": "23-26-7-22",
+      "B": "23-25-8-21",
+      "C": "3-1-17-3",
+      "D": "3-0-19-4"
+    },
+    "instruction": "DIRECTIONS (Qs. 13 to 15) : Words are coded in a particular way in terms of numbers. Find the code of the word given in each of the following questions:"
+  },
+  {
+    "question_number": 16,
+    "question": "JUNE is coded as NXPF, how will STAY be coded in the same manner ?",
+    "options": {
+      "A": "WWCZ",
+      "B": "WVCZ",
+      "C": "WWDB",
+      "D": "VWZC"
+    }
+  },
+  {
+    "question_number": 17,
+    "question": "If ACTION is coded a ZXCRLM, then HEALTH will be coded in the same way as :",
+    "options": {
+      "A": "SVZOGS",
+      "B": "TVZOGT",
+      "C": "RUZOGR",
+      "D": "QVGOZQ"
+    }
+  },
+  {
+    "question_number": 18,
+    "question": "If ‘w’ is coded as ‘a’,’s’ as ‘r’, ‘a’ as ‘j’, ‘n’ as ‘z’ and ‘r’ as ‘w’ how will answer be written ?",
+    "options": {
+      "A": "wnsaes",
+      "B": "jzraew",
+      "C": "anrwas",
+      "D": "wnraes"
+    }
+  },
+  {
+    "question_number": 19,
+    "question": "If MUSK is coded as 146816, then ZERO will be coded as :",
+    "options": {
+      "A": "1015",
+      "B": "122912",
+      "C": "1813",
+      "D": "914"
+    }
+  },
+  {
+    "question_number": 20,
+    "question": "In a certain code APPROACH is coded as CHOAPRAP. How will RESTRICT be coded ?",
+    "options": {
+      "A": "CTRISTER",
+      "B": "ERTSIRTC",
+      "C": "CTRISTRE",
+      "D": "TCIRSTRE"
+    }
+  },
+  {
+    "question_number": 21,
+    "question": "In a certion language (1) ‘go ju ni’ stands for ‘plenty of money’ ; (2) ‘pao ju go nei vu’ for ‘money creates lots of problems’ ; (3) ‘kol vu nei’ for ;problems create tension’; and (4) ‘sol turn ju haw’ for ‘still money is needed’. Which of the following words stand for ‘money’ ?",
+    "options": {
+      "A": "nei",
+      "B": "ju",
+      "C": "haw",
+      "D": "go"
+    }
+  },
+  {
+    "question_number": 22,
+    "question": "In a certion code language, (a) ‘dugo hui mul zo’ stands for ‘work is very hard’; (b) ‘hui dugo ba ki’ for ‘Bingo is very smart’; (c) ‘nano mul dugo’ for ‘Cake is hard’; and (d) ‘mul ki qu’ for ‘smart and hard’. Which of the following words for ‘Bingo’ ?",
+    "options": {
+      "A": "jalu",
+      "B": "dugo",
+      "C": "ki",
+      "D": "ba"
+    }
+  },
+  {
+    "question_number": 23,
+    "question": "In a certain code language TAP is written as SZO, then in the same code language. FREEZE is written as",
+    "options": {
+      "A": "EQDFYG",
+      "B": "ESDFYE",
+      "C": "GQFDYE",
+      "D": "EQDDYD"
+    }
+  },
+  {
+    "question_number": 24,
+    "question": "In a certain code, FORGE is written as FPTJI. How is CULPRIT written in that code ?",
+    "options": {
+      "A": "CSJNPGR",
+      "B": "CVMQSTU",
+      "C": "CVSVNZ",
+      "D": "CXOSULW"
+    }
+  },
+  {
+    "question_number": 25,
+    "question": "If finger is called toe, toe is called foot, foot is called thumb, thumb is called ankle, ankle is called palm and palm is called knee, which one finger has different name?",
+    "options": {
+      "A": "Thumb",
+      "B": "Ankle",
+      "C": "Knee",
+      "D": "Palm"
+    }
+  },
+  {
+    "question_number": 26,
+    "question": "Which of the following is the code for the word “here” ?",
+    "options": {
+      "A": "tur",
+      "B": "ner",
+      "C": "dimi",
+      "D": "legh"
+    },
+    "instruction": "DIRECTIONS (Qs. 26 to 29) : Read the information given below, and answer the questions that follow. In a certain Code (1) “rem tur dimi wee” means “my pencil was stolen”, (2) “soz rem legh ner” means “your pencil is here”, (3) “rem zet tur legh” means “blue pencil was here” and (4) “dimi rem tur soz” means “your pencil was stolen”."
+  },
+  {
+    "question_number": 27,
+    "question": "Which of the following indicates “Blue pencil is stolen” ?",
+    "options": {
+      "A": "Zet rem ner dimi",
+      "B": "Ner legh tur zut",
+      "C": "Dimi rem soz her",
+      "D": "Zet legh tur rem"
+    },
+    "instruction": "DIRECTIONS (Qs. 26 to 29) : Read the information given below, and answer the questions that follow. In a certain Code (1) “rem tur dimi wee” means “my pencil was stolen”, (2) “soz rem legh ner” means “your pencil is here”, (3) “rem zet tur legh” means “blue pencil was here” and (4) “dimi rem tur soz” means “your pencil was stolen”."
+  },
+  {
+    "question_number": 29,
+    "question": "In a certain code language, (1) ‘FOR’ stands for ‘old is Gold’; (2) ‘ROT’ stands for ‘Gold is pure’; (3) ‘ROM’ stands for ‘Gold is Costly’; How will ; ‘Pure Old Gold is Costly be written ?",
+    "options": {
+      "A": "TFROM",
+      "B": "FOTRM",
+      "C": "TOMRF"
+    },
+    "instruction": "DIRECTIONS (Qs. 26 to 29) : Read the information given below, and answer the questions that follow. In a certain Code (1) “rem tur dimi wee” means “my pencil was stolen”, (2) “soz rem legh ner” means “your pencil is here”, (3) “rem zet tur legh” means “blue pencil was here” and (4) “dimi rem tur soz” means “your pencil was stolen”."
+  },
+  {
+    "question_number": 30,
+    "question": "WOMAN",
+    "options": {
+      "A": "23-15-13-1-14",
+      "B": "23-12-26-14-13",
+      "C": "4-12-14-26-13",
+      "D": "4-26-14-13-12"
+    },
+    "instruction": "DIRECTIONS (Qs. 30 to 33) : If WORK Is coded like 4-12-9-18 then, how will you code the following?"
+  },
+  {
+    "question_number": 31,
+    "question": "LUCKY",
+    "options": {
+      "A": "12-20-4-10-4",
+      "B": "21-9-22-8-19",
+      "C": "21-18-5-19-8",
+      "D": "None of these"
+    },
+    "instruction": "DIRECTIONS (Qs. 30 to 33) : If WORK Is coded like 4-12-9-18 then, how will you code the following?"
+  },
+  {
+    "question_number": 32,
+    "question": "BANK",
+    "options": {
+      "A": "7-1-13-4-5-14",
+      "B": "20-25-5-21-22-13",
+      "C": "20-29-9-23-22-13",
+      "D": "None of these"
+    },
+    "instruction": "DIRECTIONS (Qs. 30 to 33) : If WORK Is coded like 4-12-9-18 then, how will you code the following?"
+  },
+  {
+    "question_number": 33,
+    "question": "If TOY = 60 and BOY = 37 then, PLAY = ?",
+    "options": {
+      "A": "65",
+      "B": "35",
+      "C": "45",
+      "D": "54"
+    },
+    "instruction": "DIRECTIONS (Qs. 30 to 33) : If WORK Is coded like 4-12-9-18 then, how will you code the following?"
+  },
+  {
+    "question_number": 34,
+    "question": "What is the code for ‘deep’ ?",
+    "options": {
+      "A": "1",
+      "B": "2",
+      "C": "4",
+      "D": "6"
+    },
+    "instruction": "DIRECTIONS (Q. 34-39) : Read the information given below, and answer the questions that follow. In a certain code language, ‘481’ means ‘sky is blue’, ‘246’ means ‘sea is deep’ and ‘698’ means ‘sea looks blue’."
+  },
+  {
+    "question_number": 35,
+    "question": "What is the code for ‘blue’ ?",
+    "options": {
+      "A": "1",
+      "B": "6",
+      "C": "8",
+      "D": "9"
+    },
+    "instruction": "DIRECTIONS (Q. 34-39) : Read the information given below, and answer the questions that follow. In a certain code language, ‘481’ means ‘sky is blue’, ‘246’ means ‘sea is deep’ and ‘698’ means ‘sea looks blue’."
+  },
+  {
+    "question_number": 36,
+    "question": "What is the code for ‘sea’ ?",
+    "options": {
+      "A": "2",
+      "B": "4",
+      "C": "6",
+      "D": "8"
+    },
+    "instruction": "DIRECTIONS (Q. 34-39) : Read the information given below, and answer the questions that follow. In a certain code language, ‘481’ means ‘sky is blue’, ‘246’ means ‘sea is deep’ and ‘698’ means ‘sea looks blue’."
+  },
+  {
+    "question_number": 37,
+    "question": "What is the code for ‘looks’ ?",
+    "options": {
+      "A": "4",
+      "B": "6",
+      "C": "8",
+      "D": "9"
+    },
+    "instruction": "DIRECTIONS (Q. 34-39) : Read the information given below, and answer the questions that follow. In a certain code language, ‘481’ means ‘sky is blue’, ‘246’ means ‘sea is deep’ and ‘698’ means ‘sea looks blue’."
+  },
+  {
+    "question_number": 38,
+    "question": "What is the code for ‘is’ ?",
+    "options": {
+      "A": "1",
+      "B": "2",
+      "C": "4",
+      "D": "8"
+    },
+    "instruction": "DIRECTIONS (Q. 34-39) : Read the information given below, and answer the questions that follow. In a certain code language, ‘481’ means ‘sky is blue’, ‘246’ means ‘sea is deep’ and ‘698’ means ‘sea looks blue’."
+  },
+  {
+    "question_number": 39,
+    "question": "What is the code for ‘sky’ ?",
+    "options": {
+      "A": "1",
+      "B": "4",
+      "C": "8",
+      "D": "None of these"
+    },
+    "instruction": "DIRECTIONS (Q. 34-39) : Read the information given below, and answer the questions that follow. In a certain code language, ‘481’ means ‘sky is blue’, ‘246’ means ‘sea is deep’ and ‘698’ means ‘sea looks blue’."
+  },
+  {
+    "question_number": 40,
+    "question": "If PALAM could be given the code number 43, what code number can be given to SANTACRUZ?",
+    "options": {
+      "A": "75",
+      "B": "85",
+      "C": "120",
+      "D": "123"
+    }
+  }
+]
