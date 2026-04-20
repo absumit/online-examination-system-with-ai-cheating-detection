@@ -10,9 +10,14 @@ function CreateExamModal({ onClose, onExamCreated }) {
     totalMarks: 100,
     passingScore: 40,
     difficulty: 'Medium',
+    negativeMarking: false,
+    negativeMarkingPerQuestion: 0,
+    allowOfflineRetake: false,
+    scheduleStartTime: '',
+    scheduleEndTime: '',
   });
   const [questions, setQuestions] = useState([
-    { questionText: '', options: ['', '', '', ''], correctAnswer: '' }
+    { questionText: '', options: ['', '', '', ''], correctAnswer: '', correctAnswers: [] }
   ]);
   const [loading, setLoading] = useState(false);
   const [importLoading, setImportLoading] = useState(false);
@@ -35,8 +40,29 @@ function CreateExamModal({ onClose, onExamCreated }) {
     setQuestions(newQuestions);
   };
 
+  const handleCorrectAnswerChange = (qIndex, answer) => {
+    const newQuestions = [...questions];
+    newQuestions[qIndex].correctAnswer = answer;
+    setQuestions(newQuestions);
+  };
+
+  const handleMultipleAnswerToggle = (qIndex, answer) => {
+    const newQuestions = [...questions];
+    const correctAnswers = newQuestions[qIndex].correctAnswers || [];
+    const index = correctAnswers.indexOf(answer);
+    
+    if (index > -1) {
+      correctAnswers.splice(index, 1);
+    } else {
+      correctAnswers.push(answer);
+    }
+    
+    newQuestions[qIndex].correctAnswers = correctAnswers;
+    setQuestions(newQuestions);
+  };
+
   const addQuestion = () => {
-    setQuestions([...questions, { questionText: '', options: ['', '', '', ''], correctAnswer: '' }]);
+    setQuestions([...questions, { questionText: '', options: ['', '', '', ''], correctAnswer: '', correctAnswers: [] }]);
   };
 
   const removeQuestion = (index) => {
@@ -75,7 +101,8 @@ function CreateExamModal({ onClose, onExamCreated }) {
           return {
             questionText: String(q.questionText || '').trim(),
             options,
-            correctAnswer: ''
+            correctAnswer: q.correctAnswer || '', // Use extracted answer if available
+            correctAnswers: q.correctAnswers || [] // Include multiple answers if available
           };
         })
         .filter((q) => q.questionText && q.options.filter(Boolean).length >= 2);
@@ -107,6 +134,7 @@ function CreateExamModal({ onClose, onExamCreated }) {
           questionText: q.questionText,
           options: q.options.map(o => o.trim()).filter(o => o),
           correctAnswer: q.correctAnswer,
+          correctAnswers: q.correctAnswers || [],
           marks: Math.floor(formData.totalMarks / questions.length)
         }))
       };
@@ -121,105 +149,213 @@ function CreateExamModal({ onClose, onExamCreated }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-screen overflow-y-auto p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Create New Exam</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 min-h-screen">
+      <div className="bg-white rounded-2xl max-w-5xl w-full max-h-[95vh] overflow-y-auto p-8 shadow-2xl">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8 pb-6 border-b-2 border-gray-200">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900">Create New Exam</h2>
+            <p className="text-gray-600 text-sm mt-1">Fill in all details to create a new exam</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 text-3xl font-light"
+          >
+            ✕
+          </button>
+        </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-5 py-4 rounded-lg mb-6 shadow-sm">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">Exam Title</label>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleFormChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                required
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Basic Info Section */}
+          <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Basic Information</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Exam Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                  required
+                />
+              </div>
 
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">Subject</label>
-              <input
-                type="text"
-                name="subject"
-                value={formData.subject}
-                onChange={handleFormChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                required
-              />
-            </div>
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Subject</label>
+                <input
+                  type="text"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                  required
+                />
+              </div>
 
-            <div className="col-span-2">
-              <label className="block text-gray-700 font-semibold mb-2">Description</label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleFormChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                rows="3"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">Duration (minutes)</label>
-              <input
-                type="number"
-                name="duration"
-                value={formData.duration}
-                onChange={handleFormChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">Total Marks</label>
-              <input
-                type="number"
-                name="totalMarks"
-                value={formData.totalMarks}
-                onChange={handleFormChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">Passing Score</label>
-              <input
-                type="number"
-                name="passingScore"
-                value={formData.passingScore}
-                onChange={handleFormChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">Difficulty</label>
-              <select
-                name="difficulty"
-                value={formData.difficulty}
-                onChange={handleFormChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-              >
-                <option value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
-              </select>
+              <div className="col-span-2">
+                <label className="block text-gray-700 font-semibold mb-2">Description</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                  rows="3"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="border-t pt-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-              <h3 className="text-xl font-bold text-gray-800">Questions</h3>
-              <label className="inline-flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg transition cursor-pointer">
+          {/* Exam Settings Section */}
+          <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Exam Settings</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Duration (minutes)</label>
+                <input
+                  type="number"
+                  name="duration"
+                  value={formData.duration}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Total Marks</label>
+                <input
+                  type="number"
+                  name="totalMarks"
+                  value={formData.totalMarks}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Passing Score</label>
+                <input
+                  type="number"
+                  name="passingScore"
+                  value={formData.passingScore}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Difficulty</label>
+                <select
+                  name="difficulty"
+                  value={formData.difficulty}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                >
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Marking Options Section */}
+          <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Marking Options</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="negativeMarking"
+                    checked={formData.negativeMarking}
+                    onChange={(e) => setFormData(prev => ({ ...prev, negativeMarking: e.target.checked }))}
+                    className="w-5 h-5 text-blue-600 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
+                  <span className="ml-3 text-gray-700 font-semibold">Enable Negative Marking</span>
+                </label>
+                <p className="text-gray-600 text-sm ml-8 mt-1">Apply negative marks for wrong answers</p>
+              </div>
+
+              {formData.negativeMarking && (
+                <div className="ml-8 bg-white p-4 rounded-lg border-2 border-yellow-300">
+                  <label className="block text-gray-700 font-semibold mb-2">Negative Marks Per Wrong Answer</label>
+                  <input
+                    type="number"
+                    name="negativeMarkingPerQuestion"
+                    value={formData.negativeMarkingPerQuestion}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                    placeholder="e.g., 0.25"
+                    step="0.01"
+                    min="0"
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="allowOfflineRetake"
+                    checked={formData.allowOfflineRetake}
+                    onChange={(e) => setFormData(prev => ({ ...prev, allowOfflineRetake: e.target.checked }))}
+                    className="w-5 h-5 text-blue-600 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
+                  <span className="ml-3 text-gray-700 font-semibold">Allow Offline Retake</span>
+                </label>
+                <p className="text-gray-600 text-sm ml-8 mt-1">If unchecked, exam auto-submits when internet is lost</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Exam Scheduling Section */}
+          <div className="bg-gradient-to-r from-cyan-50 to-blue-50 p-6 rounded-xl border border-cyan-200">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Exam Schedule (Optional)</h3>
+            <p className="text-gray-600 text-sm mb-4">Set a time window when students can take this exam. Leave empty for always available.</p>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Schedule Start Time</label>
+                <input
+                  type="datetime-local"
+                  name="scheduleStartTime"
+                  value={formData.scheduleStartTime}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border-2 border-cyan-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Schedule End Time</label>
+                <input
+                  type="datetime-local"
+                  name="scheduleEndTime"
+                  value={formData.scheduleEndTime}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border-2 border-cyan-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                />
+              </div>
+            </div>
+            {formData.scheduleStartTime && formData.scheduleEndTime && (
+              <div className="mt-4 p-3 bg-blue-100 border border-blue-300 rounded-lg">
+                <p className="text-blue-800 text-sm">
+                  <strong>Window:</strong> {new Date(formData.scheduleStartTime).toLocaleString()} to {new Date(formData.scheduleEndTime).toLocaleString()}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="border-t-2 border-gray-200 pt-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+              <h3 className="text-xl font-bold text-gray-900">Questions</h3>
+              <label className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition cursor-pointer shadow-sm hover:shadow-md">
                 {importLoading ? 'Importing...' : 'Import from PDF/DOCX'}
                 <input
                   type="file"
@@ -231,14 +367,14 @@ function CreateExamModal({ onClose, onExamCreated }) {
               </label>
             </div>
             {questions.map((q, qIndex) => (
-              <div key={qIndex} className="mb-6 p-4 bg-gray-50 rounded-lg">
-                <div className="flex justify-between items-center mb-3">
-                  <h4 className="font-semibold text-gray-800">Question {qIndex + 1}</h4>
+              <div key={qIndex} className="mb-6 p-5 bg-white rounded-xl border-2 border-gray-300 hover:border-blue-400 transition">
+                <div className="flex justify-between items-center mb-4">
+                  <h4 className="font-bold text-gray-900 text-lg">Question {qIndex + 1}</h4>
                   {questions.length > 1 && (
                     <button
                       type="button"
                       onClick={() => removeQuestion(qIndex)}
-                      className="text-red-500 hover:text-red-700 font-semibold"
+                      className="text-red-600 hover:text-red-800 font-bold hover:bg-red-50 px-3 py-1 rounded-lg transition"
                     >
                       Remove
                     </button>
@@ -250,11 +386,11 @@ function CreateExamModal({ onClose, onExamCreated }) {
                   placeholder="Question text"
                   value={q.questionText}
                   onChange={(e) => handleQuestionChange(qIndex, 'questionText', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-3 focus:outline-none focus:border-blue-500"
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                   required
                 />
 
-                <div className="space-y-2 mb-3">
+                <div className="space-y-2 mb-4">
                   {q.options.map((opt, oIndex) => (
                     <input
                       key={oIndex}
@@ -262,49 +398,73 @@ function CreateExamModal({ onClose, onExamCreated }) {
                       placeholder={`Option ${oIndex + 1}`}
                       value={opt}
                       onChange={(e) => handleOptionChange(qIndex, oIndex, e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                       required
                     />
                   ))}
                 </div>
 
-                <select
-                  value={q.correctAnswer}
-                  onChange={(e) => handleQuestionChange(qIndex, 'correctAnswer', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                  required
-                >
-                  <option value="">Select correct answer</option>
-                  {q.options.map((opt, idx) => (
-                    <option key={idx} value={opt}>
-                      {opt || `Option ${idx + 1}`}
-                    </option>
-                  ))}
-                </select>
+                <div className="mb-4">
+                  <label className="block text-gray-700 font-semibold mb-2">Correct Answer (Primary)</label>
+                  <select
+                    value={q.correctAnswer}
+                    onChange={(e) => handleCorrectAnswerChange(qIndex, e.target.value)}
+                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                    required
+                  >
+                    <option value="">Select primary correct answer</option>
+                    {q.options.map((opt, idx) => (
+                      <option key={idx} value={opt}>
+                        {opt || `Option ${idx + 1}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 font-semibold mb-3">Mark all correct answers (for questions with multiple correct answers)</label>
+                  <div className="space-y-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    {q.options.map((opt, idx) => (
+                      <label key={idx} className="flex items-center cursor-pointer p-2 hover:bg-gray-100 rounded transition">
+                        <input
+                          type="checkbox"
+                          checked={(q.correctAnswers || []).includes(opt)}
+                          onChange={() => handleMultipleAnswerToggle(qIndex, opt)}
+                          className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-2 focus:ring-blue-500"
+                        />
+                        <span className="ml-2 text-gray-700">{opt || `Option ${idx + 1}`}</span>
+                        {q.correctAnswer === opt && <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Primary</span>}
+                      </label>
+                    ))}
+                  </div>
+                  {(q.correctAnswers || []).length > 0 && (
+                    <p className="text-sm text-blue-600 mt-2">Selected: {(q.correctAnswers || []).join(', ')}</p>
+                  )}
+                </div>
               </div>
             ))}
 
             <button
               type="button"
               onClick={addQuestion}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition shadow-sm hover:shadow-md"
             >
               + Add Question
             </button>
           </div>
 
-          <div className="flex gap-3 justify-end">
+          <div className="flex gap-4 justify-end border-t-2 border-gray-200 pt-6">
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-lg transition"
+              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-8 rounded-lg transition shadow-sm hover:shadow-md"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition disabled:bg-gray-400"
+              className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
             >
               {loading ? 'Creating...' : 'Create Exam'}
             </button>

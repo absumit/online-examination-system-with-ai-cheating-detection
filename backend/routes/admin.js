@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const exam = require("../models/exam");
 const exam_attempt = require("../models/exam_attempt");
+const user = require("../models/user");
+const hashing = require("../utils/hashpass");
+const inputvalidator = require("../utils/validators");
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs/promises');
@@ -69,10 +72,18 @@ const normalizeImportedQuestions = (parsedQuestions) => {
       const rawQuestion = String(item.question || item.questionText || '').trim();
       const rawOptions = item.options;
       let options = [];
+      let optionsMap = {}; // Map letters to option text
 
       if (Array.isArray(rawOptions)) {
         options = rawOptions;
+        // Create map A->options[0], B->options[1], etc.
+        options.forEach((opt, idx) => {
+          const letter = String.fromCharCode(65 + idx); // A, B, C, D, E
+          optionsMap[letter] = opt;
+        });
       } else if (rawOptions && typeof rawOptions === 'object') {
+        // If options come as object with keys A, B, C
+        optionsMap = rawOptions;
         options = Object.values(rawOptions);
       }
 
@@ -80,10 +91,27 @@ const normalizeImportedQuestions = (parsedQuestions) => {
         .map((opt) => String(opt || '').trim())
         .filter(Boolean);
 
+      // Handle answers from extracted JSON - convert letters to actual option text
+      let correctAnswers = [];
+      let correctAnswer = '';
+      
+      if (item.answers && Array.isArray(item.answers)) {
+        // Convert letter answers (A, B, C) to actual option text
+        correctAnswers = item.answers
+          .map(ans => optionsMap[ans.toUpperCase()] || '')
+          .filter(Boolean);
+        
+        if (correctAnswers.length > 0) {
+          correctAnswer = correctAnswers[0];
+        }
+      }
+
       return {
         questionText: rawQuestion,
         options: normalizedOptions,
-        correctAnswer: ''
+        correctAnswer: correctAnswer,
+        correctAnswers: correctAnswers,
+        marks: item.marks || 1
       };
     })
     .filter((q) => q.questionText && q.options.length >= 2);
@@ -91,10 +119,61 @@ const normalizeImportedQuestions = (parsedQuestions) => {
 
 // Middleware - Authentication & Authorization (will be applied in server.js)
 
+// Create Admin User (Admin only)
+router.post('/create-admin', async (req, res) => {
+  try {
+    const { name, email, password, age } = req.body;
+
+    // Validate required fields
+    if (!name || !email || !password) {
+      return res.status(400).send("Name, email, and password are required");
+    }
+
+    if (password.length < 6) {
+      return res.status(400).send("Password must be at least 6 characters long");
+    }
+
+    // Check if user already exists
+    const existingUser = await user.findOne({ email });
+    if (existingUser) {
+      return res.status(400).send("Email already exists");
+    }
+
+    // Hash password
+    const hashed = await hashing(password);
+
+    // Create admin user
+    const newAdmin = await user.create({
+      name,
+      email,
+      password: hashed,
+      age: age || null,
+      role: 'admin'
+    });
+
+    res.status(201).json({ 
+      message: "Admin user created successfully", 
+      success: true,
+      admin: {
+        id: newAdmin._id,
+        name: newAdmin.name,
+        email: newAdmin.email,
+        role: newAdmin.role
+      }
+    });
+  }
+  catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ message: "Email already exists", success: false });
+    }
+    res.status(500).send("Error creating admin user: " + err.message);
+  }
+});
+
 // Create Exam (Admin only)
 router.post('/exam/create', async (req, res) => {
   try {
-    const { title, subject, description, duration, totalQuestions, totalMarks, passingScore, difficulty, questions } = req.body;
+    const { title, subject, description, duration, totalQuestions, totalMarks, passingScore, difficulty, negativeMarking, negativeMarkingPerQuestion, allowOfflineRetake, scheduleStartTime, scheduleEndTime, questions } = req.body;
 
     if (!title || !subject || !totalMarks || !passingScore || !questions) {
       return res.status(400).send("Missing required fields");
@@ -109,6 +188,11 @@ router.post('/exam/create', async (req, res) => {
       totalMarks,
       passingScore,
       difficulty: difficulty || 'Medium',
+      negativeMarking: negativeMarking || false,
+      negativeMarkingPerQuestion: negativeMarkingPerQuestion || 0,
+      allowOfflineRetake: allowOfflineRetake || false,
+      scheduleStartTime: scheduleStartTime || null,
+      scheduleEndTime: scheduleEndTime || null,
       questions,
       createdBy: req.user._id,
       status: 'Draft'
@@ -274,6 +358,44 @@ router.get('/exam/:examId/attempts', async (req, res) => {
   }
   catch (err) {
     res.status(500).send("Error fetching attempts: " + err.message);
+  }
+});
+
+// Get All Admin Users (Admin only)
+router.get('/get-admins', async (req, res) => {
+  try {
+    const admins = await user.find({ role: 'admin' }).select('_id name email age role');
+    res.send(admins);
+  }
+  catch (err) {
+    res.status(500).send("Error fetching admins: " + err.message);
+  }
+});
+
+// Delete Admin User (Admin only)
+router.delete('/delete-admin/:adminId', async (req, res) => {
+  try {
+    const adminId = req.params.adminId;
+
+    const adminToDelete = await user.findById(adminId);
+    if (!adminToDelete) {
+      return res.status(404).send("Admin user not found");
+    }
+
+    if (adminToDelete.role !== 'admin') {
+      return res.status(403).send("This user is not an admin");
+    }
+
+    // Prevent deleting the current user
+    if (adminToDelete._id.toString() === req.user._id.toString()) {
+      return res.status(403).send("You cannot delete your own admin account");
+    }
+
+    await user.findByIdAndDelete(adminId);
+    res.send({ message: "Admin user deleted successfully" });
+  }
+  catch (err) {
+    res.status(500).send("Error deleting admin: " + err.message);
   }
 });
 

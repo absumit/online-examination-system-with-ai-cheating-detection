@@ -5,7 +5,7 @@ import json
 import re
 from pathlib import Path
 
-from docx import Document
+from docx import Document 
 from pypdf import PdfReader
 
 
@@ -13,6 +13,7 @@ QUESTION_START_RE = re.compile(r"(?m)^(?:Q\s*)?(\d{1,2})(?:[.)]|(?=\s+[A-Za-z]))
 OPTION_RE = re.compile(r"(?i)(?<![A-Za-z])\(?([A-E])\)?[.)]\s*")
 QUESTION_LINE_RE = re.compile(r"^(?:Q\s*)?(\d{1,2})(?:[.)]|(?=\s+[A-Za-z]))\s*(.*)$")
 INSTRUCTION_RANGE_RE = re.compile(r"Qs?\.?\s*\)?\s*(\d+)\s*(?:to|-)\s*(\d+)", re.IGNORECASE)
+ANSWER_RE = re.compile(r"(?i)^(?:Answer|Ans):\s*([A-E](?:\s*,\s*[A-E])*)(?:\s|$)", re.MULTILINE)
 
 
 def extract_pdf_text(pdf_path: Path) -> str:
@@ -91,6 +92,19 @@ def parse_options(options_text: str) -> dict[str, str]:
     return options
 
 
+def parse_answers(answer_text: str) -> list[str] | None:
+    """Parse answer string and return list of answers (single or multiple)"""
+    if not answer_text:
+        return None
+    
+    # Split by comma and clean up
+    answers = [ans.strip().upper() for ans in answer_text.split(",")]
+    # Filter out empty strings and validate answers are single letters
+    answers = [ans for ans in answers if ans and len(ans) == 1 and ans.isalpha()]
+    
+    return answers if answers else None
+
+
 def finalize_question(
     questions: list[dict[str, object]],
     current: dict[str, object] | None,
@@ -105,6 +119,8 @@ def finalize_question(
     }
     if current.get("instruction"):
         question["instruction"] = current["instruction"]
+    if current.get("answers"):
+        question["answers"] = current["answers"]
     questions.append(question)
 
 
@@ -130,6 +146,24 @@ def parse_questions(text: str) -> list[dict[str, object]]:
     pending_instruction: list[str] = []
 
     for line in lines:
+        # Check if this line is an answer line (Answer: or Ans:)
+        answer_line_check = re.match(r"(?i)^(?:Answer|Ans):\s*(.*)$", line)
+        if answer_line_check and current is not None:
+            answer_text = answer_line_check.group(1).strip()
+            
+            if not answer_text:
+                # Empty answer line - log but don't crash
+                print(f"WARNING: Question {current.get('question_number')} has empty Answer line")
+            else:
+                # Try to parse answers
+                answers = parse_answers(answer_text)
+                if answers:
+                    current["answers"] = answers
+                else:
+                    # Answer line exists but no valid answers found
+                    print(f"WARNING: Question {current.get('question_number')} - Answer line has invalid format: '{answer_text}'")
+            continue
+
         if "DIRECTIONS" in line and not line.upper().startswith("DIRECTIONS"):
             line, trailing = line.split("DIRECTIONS", 1)
             line = line.strip()

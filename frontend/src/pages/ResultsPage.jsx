@@ -128,12 +128,18 @@ function ResultsPage() {
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Your Answer:</p>
                       <p className="font-semibold text-gray-800">
-                        {answer.selectedAnswer || 'Not answered'}
+                        {Array.isArray(answer.selectedAnswer) && answer.selectedAnswer.length > 0
+                          ? answer.selectedAnswer.join(', ')
+                          : answer.selectedAnswer || 'Not answered'}
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Correct Answer:</p>
-                      <p className="font-semibold text-gray-800">{answer.correctAnswer}</p>
+                      <p className="font-semibold text-gray-800">
+                        {answer.correctAnswers && answer.correctAnswers.length > 0
+                          ? answer.correctAnswers.join(', ')
+                          : answer.correctAnswer}
+                      </p>
                     </div>
                   </div>
 

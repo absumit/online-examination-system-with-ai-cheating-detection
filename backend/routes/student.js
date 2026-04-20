@@ -8,8 +8,24 @@ const exam_attempt = require("../models/exam_attempt");
 
 router.get('/exams', async (req, res) => {
   try {
-    const publishedExams = await exam.find({ isPublished: true, status: 'Active' }).select('-questions');
-    res.send(publishedExams);
+    const publishedExams = await exam.find({ isPublished: true, status: 'Active' }).select('-questions').sort({ createdAt: -1 });
+    
+    // Check which exams the student has appeared in
+    const examsWithAppearanceStatus = await Promise.all(
+      publishedExams.map(async (examDoc) => {
+        const examData = examDoc.toObject();
+        const hasAppeared = await exam_attempt.countDocuments({
+          examId: examDoc._id,
+          studentId: req.user._id
+        }) > 0;
+        return {
+          ...examData,
+          hasAppeared
+        };
+      })
+    );
+    
+    res.send(examsWithAppearanceStatus);
   }
   catch (err) {
     res.status(500).send("Error fetching exams: " + err.message);
@@ -30,6 +46,16 @@ router.get('/exam/:examId', async (req, res) => {
       return res.status(403).send("This exam is not available");
     }
 
+    // Check if exam is scheduled and within time window
+    if (examData.scheduleStartTime || examData.scheduleEndTime) {
+      const now = new Date();
+      if (examData.scheduleStartTime && now < new Date(examData.scheduleStartTime)) {
+        return res.status(403).send("This exam is not yet available. It will be available on " + new Date(examData.scheduleStartTime).toLocaleString());
+      }
+      if (examData.scheduleEndTime && now > new Date(examData.scheduleEndTime)) {
+        return res.status(403).send("This exam has expired. The exam window ended on " + new Date(examData.scheduleEndTime).toLocaleString());
+      }
+    }
   
     const attemptCount = await exam_attempt.countDocuments({ examId, studentId: req.user._id });
     if (attemptCount >= examData.maxAttempts) {
@@ -42,7 +68,9 @@ router.get('/exam/:examId', async (req, res) => {
         _id: q._id,
         questionText: q.questionText,
         options: q.options,
-        marks: q.marks
+        marks: q.marks,
+        multipleAnswersAllowed: q.correctAnswers && q.correctAnswers.length > 1 // Indicates if multiple answers are accepted
+        // Do NOT send correctAnswer or correctAnswers - students shouldn't see the answers!
       }))
     };
 
@@ -92,8 +120,9 @@ router.post('/exam/:examId/start', async (req, res) => {
         questionId: q._id,
         questionText: q.questionText,
         marks: q.marks,
-        selectedAnswer: null,
+        selectedAnswer: [], // Initialize as empty array
         correctAnswer: q.correctAnswer,
+        correctAnswers: q.correctAnswers, // Include multiple answers if available
         isCorrect: false,
         marksObtained: 0
       }))
@@ -112,7 +141,12 @@ router.put('/exam/attempt/:attemptId/answer', async (req, res) => {
     const attemptId = req.params.attemptId;
     const { questionIndex, selectedAnswer } = req.body;
 
-    if (questionIndex === undefined || !selectedAnswer) {
+    // Validate inputs - allow non-empty strings or non-empty arrays
+    const isValidAnswer = 
+      (typeof selectedAnswer === 'string' && selectedAnswer.trim().length > 0) ||
+      (Array.isArray(selectedAnswer) && selectedAnswer.length > 0);
+
+    if (questionIndex === undefined || questionIndex === null || !isValidAnswer) {
       return res.status(400).send("questionIndex and selectedAnswer are required");
     }
 
@@ -171,19 +205,50 @@ router.post('/exam/attempt/:attemptId/submit', async (req, res) => {
     let unansweredCount = 0;
 
     attempt.answers.forEach(answer => {
-      if (!answer.selectedAnswer) {
+      // Check if answer was selected (selectedAnswer is array with at least one element)
+      if (!answer.selectedAnswer || answer.selectedAnswer.length === 0) {
         unansweredCount++;
-      } else if (answer.selectedAnswer === answer.correctAnswer) {
-        correctCount++;
-        totalMarksObtained += answer.marks || 0;
-        answer.isCorrect = true;
-        answer.marksObtained = answer.marks || 0;
       } else {
-        wrongCount++;
-        answer.isCorrect = false;
-        answer.marksObtained = 0;
+        // Check if answer is correct (handle both single and multiple correct answers)
+        let isAnswerCorrect = false;
+        
+        const selectedAnswers = Array.isArray(answer.selectedAnswer) ? answer.selectedAnswer : [answer.selectedAnswer];
+        
+        if (answer.correctAnswers && Array.isArray(answer.correctAnswers) && answer.correctAnswers.length > 1) {
+          // Multiple correct answers - check if selected answers match exactly
+          const selectedSet = new Set(selectedAnswers);
+          const correctSet = new Set(answer.correctAnswers);
+          isAnswerCorrect = selectedSet.size === correctSet.size && 
+                           Array.from(selectedSet).every(ans => correctSet.has(ans));
+        } else if (answer.correctAnswers && Array.isArray(answer.correctAnswers) && answer.correctAnswers.length === 1) {
+          // Single correct answer stored as array
+          isAnswerCorrect = selectedAnswers.length === 1 && selectedAnswers[0] === answer.correctAnswers[0];
+        } else if (answer.correctAnswer) {
+          // Fallback to correctAnswer if correctAnswers not available
+          isAnswerCorrect = selectedAnswers.length === 1 && selectedAnswers[0] === answer.correctAnswer;
+        }
+        
+        if (isAnswerCorrect) {
+          correctCount++;
+          totalMarksObtained += answer.marks || 0;
+          answer.isCorrect = true;
+          answer.marksObtained = answer.marks || 0;
+        } else {
+          wrongCount++;
+          answer.isCorrect = false;
+          // Apply negative marking if enabled
+          if (examData.negativeMarking && examData.negativeMarkingPerQuestion > 0) {
+            answer.marksObtained = -(examData.negativeMarkingPerQuestion);
+            totalMarksObtained -= examData.negativeMarkingPerQuestion;
+          } else {
+            answer.marksObtained = 0;
+          }
+        }
       }
     });
+
+    // Ensure marks don't go below 0
+    totalMarksObtained = Math.max(0, totalMarksObtained);
 
     const percentage = (totalMarksObtained / examData.totalMarks) * 100;
     const isPassed = totalMarksObtained >= examData.passingScore;
@@ -304,9 +369,18 @@ router.post('/exam/attempt/:attemptId/flag-tab-switch', async (req, res) => {
         } else {
           wrongCount++;
           answer.isCorrect = false;
-          answer.marksObtained = 0;
+          // Apply negative marking if enabled
+          if (examData.negativeMarking && examData.negativeMarkingPerQuestion > 0) {
+            answer.marksObtained = -(examData.negativeMarkingPerQuestion);
+            totalMarksObtained -= examData.negativeMarkingPerQuestion;
+          } else {
+            answer.marksObtained = 0;
+          }
         }
       });
+
+      // Ensure marks don't go below 0
+      totalMarksObtained = Math.max(0, totalMarksObtained);
 
       const percentage = (totalMarksObtained / examData.totalMarks) * 100;
       const isPassed = totalMarksObtained >= examData.passingScore;
@@ -343,17 +417,19 @@ router.get('/exam-history', async (req, res) => {
   try {
     const attempts = await exam_attempt.find({ studentId: req.user._id }).populate('examId', 'title subject');
 
-    const history = attempts.map(attempt => ({
-      attemptId: attempt._id,
-      examTitle: attempt.examId.title,
-      subject: attempt.examId.subject,
-      marksObtained: attempt.totalMarksObtained,
-      percentage: attempt.percentage,
-      isPassed: attempt.isPassed,
-      status: attempt.status,
-      startTime: attempt.startTime,
-      endTime: attempt.endTime
-    }));
+    const history = attempts
+      .filter(attempt => attempt.examId) // Filter out attempts where exam was deleted
+      .map(attempt => ({
+        attemptId: attempt._id,
+        examTitle: attempt.examId?.title || 'Deleted Exam',
+        subject: attempt.examId?.subject || 'N/A',
+        marksObtained: attempt.totalMarksObtained || 0,
+        percentage: attempt.percentage || 0,
+        isPassed: attempt.isPassed || false,
+        status: attempt.status || 'Unknown',
+        startTime: attempt.startTime,
+        endTime: attempt.endTime
+      }));
 
     res.send(history);
   }

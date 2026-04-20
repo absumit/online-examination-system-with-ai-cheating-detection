@@ -8,7 +8,6 @@ function Register() {
     email: '',
     password: '',
     age: '',
-    role: 'student',
     department: '',
     enrollmentNumber: ''
   });
@@ -117,45 +116,28 @@ function Register() {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold mb-1 text-sm">Role</label>
-            <select
-              name="role"
-              value={formData.role}
+            <label className="block text-gray-700 font-semibold mb-1 text-sm">Department</label>
+            <input
+              type="text"
+              name="department"
+              value={formData.department}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500"
-            >
-              <option value="student">Student</option>
-              <option value="admin">Admin</option>
-            </select>
+              placeholder="Enter your department"
+            />
           </div>
 
-          {formData.role === 'student' && (
-            <>
-              <div>
-                <label className="block text-gray-700 font-semibold mb-1 text-sm">Department</label>
-                <input
-                  type="text"
-                  name="department"
-                  value={formData.department}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500"
-                  placeholder="Enter your department"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-700 font-semibold mb-1 text-sm">Enrollment Number</label>
-                <input
-                  type="text"
-                  name="enrollmentNumber"
-                  value={formData.enrollmentNumber}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500"
-                  placeholder="Enter your enrollment number"
-                />
-              </div>
-            </>
-          )}
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1 text-sm">Enrollment Number</label>
+            <input
+              type="text"
+              name="enrollmentNumber"
+              value={formData.enrollmentNumber}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500"
+              placeholder="Enter your enrollment number"
+            />
+          </div>
 
           <button
             type="submit"

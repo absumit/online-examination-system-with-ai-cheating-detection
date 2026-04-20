@@ -45,6 +45,7 @@ const newschema = new Schema({
         questionText: String,
         options: [String],
         correctAnswer: String,
+        correctAnswers: [String], // For multiple correct answers
         marks: Number,
     }],
     status:{
@@ -65,6 +66,24 @@ const newschema = new Schema({
     maxAttempts:{
         type:Number,
         default:1
+    },
+    negativeMarking:{
+        type:Boolean,
+        default:false
+    },
+    negativeMarkingPerQuestion:{
+        type:Number,
+        default:0
+    },
+    allowOfflineRetake:{
+        type:Boolean,
+        default:false
+    },
+    scheduleStartTime:{
+        type:Date
+    },
+    scheduleEndTime:{
+        type:Date
     },
     showResults:{
         type:Boolean,

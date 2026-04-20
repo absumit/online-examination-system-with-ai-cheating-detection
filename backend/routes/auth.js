@@ -17,11 +17,14 @@ const COOKIE_OPTIONS = {
 const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 const TOKEN_TTL = '7d';
 
-// Register Route
+// Register Route - Students only
 router.post('/register', async (req, res) => {
   try {
     // Validation
     inputvalidator(req.body);
+
+    // Force role to 'student' for public registration - admins can only be created by existing admins
+    req.body.role = 'student';
 
     // Converting password into hashing
     const hashed = await hashing(req.body.password);

@@ -15,8 +15,9 @@ const newschema = new Schema({
     answers:[{
         questionId:mongoose.Schema.Types.ObjectId,
         questionText:String,
-        selectedAnswer:String,
+        selectedAnswer:[String], // Can be array of strings for multiple answers or single answer
         correctAnswer:String,
+        correctAnswers:[String], // For multiple correct answers
         isCorrect:Boolean,
         marksObtained:Number,
         marks:Number

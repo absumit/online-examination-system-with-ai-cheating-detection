@@ -10,6 +10,37 @@ function StudentDashboard() {
   const [activeTab, setActiveTab] = useState('available');
   const navigate = useNavigate();
 
+  // Get exam status based on schedule
+  const getExamStatus = (exam) => {
+    if (!exam.scheduleStartTime || !exam.scheduleEndTime) {
+      return { status: 'active', label: 'Active', color: 'green' };
+    }
+
+    const now = new Date();
+    const startTime = new Date(exam.scheduleStartTime);
+    const endTime = new Date(exam.scheduleEndTime);
+
+    if (now < startTime) {
+      return { 
+        status: 'scheduled', 
+        label: `Available on ${startTime.toLocaleString()}`, 
+        color: 'blue' 
+      };
+    } else if (now > endTime) {
+      return { 
+        status: 'expired', 
+        label: 'Expired', 
+        color: 'red' 
+      };
+    } else {
+      return { 
+        status: 'active', 
+        label: `Closes on ${endTime.toLocaleString()}`, 
+        color: 'green' 
+      };
+    }
+  };
+
   useEffect(() => {
     fetchExams();
     fetchHistory();
@@ -85,7 +116,9 @@ function StudentDashboard() {
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-6">
-                {exams.map(exam => (
+                {exams.map(exam => {
+                  const examStatus = getExamStatus(exam);
+                  return (
                   <div key={exam._id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
@@ -114,7 +147,7 @@ function StudentDashboard() {
                         </div>
                       </div>
                       <div className="ml-4">
-                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4 ${
+                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
                           exam.difficulty === 'Easy' ? 'bg-green-100 text-green-800' :
                           exam.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
                           'bg-red-100 text-red-800'
@@ -124,14 +157,36 @@ function StudentDashboard() {
                       </div>
                     </div>
 
-                    <button
-                      onClick={() => handleStartExam(exam._id)}
-                      className="mt-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition"
-                    >
-                      Start Exam →
-                    </button>
+                    <div className="flex justify-between items-center mt-6">
+                      <div className="flex gap-3">
+                        <span className={`inline-block px-4 py-2 rounded-lg text-sm font-semibold ${
+                          examStatus.color === 'green' ? 'bg-green-100 text-green-800' :
+                          examStatus.color === 'blue' ? 'bg-blue-100 text-blue-800' :
+                          'bg-red-100 text-red-800'
+                        }`}>
+                          {examStatus.label}
+                        </span>
+                        <span className={`inline-block px-4 py-2 rounded-lg text-sm font-semibold ${
+                          exam.hasAppeared ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {exam.hasAppeared ? '✓ Appeared' : '⊘ Not Appeared'}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => handleStartExam(exam._id)}
+                        disabled={examStatus.status !== 'active'}
+                        className={`font-bold py-2 px-6 rounded-lg transition ${
+                          examStatus.status === 'active'
+                            ? 'bg-blue-500 hover:bg-blue-600 text-white cursor-pointer'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
+                      >
+                        {examStatus.status === 'active' ? 'Start Exam →' : 'Unavailable'}
+                      </button>
+                    </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
