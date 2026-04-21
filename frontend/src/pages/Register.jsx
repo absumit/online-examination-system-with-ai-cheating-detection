@@ -53,30 +53,30 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-6 md:py-8">
       <div className="w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-light text-gray-900 mb-2">Create Account</h1>
-          <p className="text-gray-500">Sign up to get started with exams</p>
+        <div className="text-center mb-8 md:mb-10">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-light text-gray-900 mb-2">Create Account</h1>
+          <p className="text-sm sm:text-base text-gray-500">Sign up to get started with exams</p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg mb-6 text-xs sm:text-sm">
             {error}
           </div>
         )}
 
         {/* Registration Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           <div>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition text-sm sm:text-base"
               placeholder="Full Name"
               required
             />
@@ -88,7 +88,7 @@ function Register() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition text-sm sm:text-base"
               placeholder="Email address"
               required
             />
@@ -100,7 +100,7 @@ function Register() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition text-sm sm:text-base"
               placeholder="Password (min 6 characters)"
               required
             />
@@ -112,7 +112,7 @@ function Register() {
               name="age"
               value={formData.age}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition text-sm sm:text-base"
               placeholder="Age"
             />
           </div>
@@ -123,7 +123,7 @@ function Register() {
               name="department"
               value={formData.department}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition text-sm sm:text-base"
               placeholder="Department"
             />
           </div>
@@ -134,7 +134,7 @@ function Register() {
               name="enrollmentNumber"
               value={formData.enrollmentNumber}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition text-sm sm:text-base"
               placeholder="Enrollment Number"
             />
           </div>
@@ -142,14 +142,14 @@ function Register() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white font-medium py-3 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed mt-2"
+            className="w-full bg-blue-600 text-white font-medium py-2 sm:py-3 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed mt-2 text-sm sm:text-base"
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 
         {/* Footer */}
-        <p className="text-center text-gray-600 text-sm mt-8">
+        <p className="text-center text-gray-600 text-xs sm:text-sm mt-6 md:mt-8">
           Already have an account?{' '}
           <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium transition">
             Sign in

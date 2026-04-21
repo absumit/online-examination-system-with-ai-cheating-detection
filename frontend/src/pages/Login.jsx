@@ -66,29 +66,29 @@ function Login() {
 
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
-      <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      <div className="min-h-screen bg-white flex items-center justify-center px-4 py-6 md:py-8">
         <div className="w-full max-w-md">
           {/* Header */}
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-light text-gray-900 mb-2">Welcome Back</h1>
-            <p className="text-gray-500">Sign in to your exam account</p>
+          <div className="text-center mb-8 md:mb-10">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-light text-gray-900 mb-2">Welcome Back</h1>
+            <p className="text-sm sm:text-base text-gray-500">Sign in to your exam account</p>
           </div>
 
           {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
+            <div className="bg-red-50 border border-red-200 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg mb-6 text-xs sm:text-sm">
               {error}
             </div>
           )}
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-5 mb-8">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 mb-6 md:mb-8">
             <div>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition text-sm sm:text-base"
                 placeholder="Email address"
                 required
               />
@@ -99,7 +99,7 @@ function Login() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition text-sm sm:text-base"
                 placeholder="Password"
                 required
               />
@@ -108,21 +108,21 @@ function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white font-medium py-3 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full bg-blue-600 text-white font-medium py-2 sm:py-3 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed text-sm sm:text-base"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
           {/* Divider */}
-          <div className="flex items-center mb-8">
+          <div className="flex items-center mb-6 md:mb-8">
             <div className="flex-1 border-t border-gray-200"></div>
-            <span className="px-4 text-gray-500 text-sm">or continue with</span>
+            <span className="px-3 sm:px-4 text-gray-500 text-xs sm:text-sm">or continue with</span>
             <div className="flex-1 border-t border-gray-200"></div>
           </div>
 
           {/* Google Login */}
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-6 md:mb-8 overflow-x-auto">
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() => setError('Google login failed')}
@@ -133,7 +133,7 @@ function Login() {
           </div>
 
           {/* Footer */}
-          <p className="text-center text-gray-600 text-sm">
+          <p className="text-center text-gray-600 text-xs sm:text-sm">
             Don't have an account?{' '}
             <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium transition">
               Create one

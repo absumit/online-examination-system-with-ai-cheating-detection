@@ -318,24 +318,24 @@ function AdminDashboard() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-screen text-xl">Loading exams...</div>;
+    return <div className="flex items-center justify-center h-screen text-lg sm:text-xl">Loading exams...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 px-4 sm:px-6 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800">Admin Dashboard</h1>
-          <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">Admin Dashboard</h1>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
             <button
               onClick={() => setShowAdminModal(true)}
-              className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-6 rounded-lg transition"
+              className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 sm:px-6 rounded-lg transition text-sm sm:text-base w-full sm:w-auto"
             >
               Manage Admin
             </button>
             <button
               onClick={() => setShowModal(true)}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition"
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 sm:px-6 rounded-lg transition text-sm sm:text-base w-full sm:w-auto"
             >
               + Create Exam
             </button>
@@ -343,7 +343,7 @@ function AdminDashboard() {
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded mb-4 text-sm sm:text-base">
             {error}
           </div>
         )}
@@ -366,28 +366,28 @@ function AdminDashboard() {
 
         {exams.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">No exams created yet</p>
+            <p className="text-gray-600 text-base sm:text-lg">No exams created yet</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6">
             {exams.map(exam => (
-              <div key={exam._id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-800">{exam.title}</h3>
-                    <p className="text-gray-600">{exam.subject}</p>
-                    <div className="grid grid-cols-2 gap-4 mt-4">
-                      <p className="text-sm text-gray-700"><strong>Duration:</strong> {exam.duration} min</p>
-                      <p className="text-sm text-gray-700"><strong>Total Questions:</strong> {exam.totalQuestions}</p>
-                      <p className="text-sm text-gray-700"><strong>Total Marks:</strong> {exam.totalMarks}</p>
-                      <p className="text-sm text-gray-700"><strong>Passing Score:</strong> {exam.passingScore}</p>
+              <div key={exam._id} className="bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-lg transition">
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                  <div className="flex-1 w-full">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-800">{exam.title}</h3>
+                    <p className="text-sm sm:text-base text-gray-600">{exam.subject}</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mt-4">
+                      <p className="text-xs sm:text-sm text-gray-700"><strong>Duration:</strong> {exam.duration} min</p>
+                      <p className="text-xs sm:text-sm text-gray-700"><strong>Questions:</strong> {exam.totalQuestions}</p>
+                      <p className="text-xs sm:text-sm text-gray-700"><strong>Marks:</strong> {exam.totalMarks}</p>
+                      <p className="text-xs sm:text-sm text-gray-700"><strong>Pass:</strong> {exam.passingScore}</p>
                     </div>
-                    <p className="text-sm text-blue-700 mt-3 font-semibold">
+                    <p className="text-xs sm:text-sm text-blue-700 mt-3 font-semibold">
                       <strong>Schedule:</strong> {getScheduleStatus(exam)}
                     </p>
                   </div>
-                  <div className="space-y-2 ml-4">
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                  <div className="space-y-2 ml-0 sm:ml-4">
+                    <span className={`inline-block px-2 sm:px-3 py-1 rounded-full text-xs font-semibold ${
                       exam.isPublished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
                     }`}>
                       {exam.isPublished ? 'Published' : 'Draft'}
@@ -396,16 +396,16 @@ function AdminDashboard() {
                   </div>
                 </div>
 
-                <div className="flex gap-3 mt-6">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-4 sm:mt-6">
                   <button
                     onClick={() => handleViewAttempts(exam)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold transition"
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-semibold transition text-sm sm:text-base w-full sm:w-auto"
                   >
                     View Attempts
                   </button>
                   <button
                     onClick={() => handlePublishExam(exam._id)}
-                    className={`px-4 py-2 rounded-lg font-semibold transition ${
+                    className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-semibold transition text-sm sm:text-base w-full sm:w-auto ${
                       exam.isPublished
                         ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
                         : 'bg-green-500 hover:bg-green-600 text-white'
@@ -415,7 +415,7 @@ function AdminDashboard() {
                   </button>
                   <button
                     onClick={() => handleDeleteExam(exam._id)}
-                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold transition"
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-semibold transition text-sm sm:text-base w-full sm:w-auto"
                   >
                     Delete
                   </button>
@@ -427,68 +427,68 @@ function AdminDashboard() {
       </div>
 
       {showAnalysis && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 min-h-screen">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[95vh] overflow-y-auto">
-            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 border-b-4 border-blue-800 p-6 flex justify-between items-center shadow-lg">
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 px-4 py-4 min-h-screen overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 border-b-4 border-blue-800 p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-lg">
               <div>
-                <h2 className="text-3xl font-bold text-white">{selectedExam?.title}</h2>
-                <p className="text-blue-100 text-sm mt-1">Student Attempts Analysis</p>
+                <h2 className="text-2xl sm:text-3xl font-bold text-white">{selectedExam?.title}</h2>
+                <p className="text-blue-100 text-xs sm:text-sm mt-1">Student Attempts Analysis</p>
               </div>
-              <div className="flex gap-3 items-center">
+              <div className="flex gap-2 sm:gap-3 items-center w-full sm:w-auto flex-col sm:flex-row">
                 {attempts.length > 0 && (
                   <button
                     onClick={exportAttemptsToPDF}
-                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition flex items-center gap-2"
+                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-1.5 sm:py-2 px-3 sm:px-4 rounded-lg transition flex items-center gap-2 text-xs sm:text-base w-full sm:w-auto justify-center"
                   >
                     📄 Export PDF
                   </button>
                 )}
                 <button
                   onClick={() => setShowAnalysis(false)}
-                  className="text-blue-100 hover:text-white text-4xl font-light"
+                  className="text-blue-100 hover:text-white text-3xl sm:text-4xl font-light w-full sm:w-auto text-right"
                 >
                   ✕
                 </button>
               </div>
             </div>
 
-            <div className="p-8">
+            <div className="p-4 sm:p-8">
               {attemptsLoading ? (
                 <div className="text-center py-12">
-                  <p className="text-gray-600 text-lg">Loading attempts...</p>
+                  <p className="text-gray-600 text-base sm:text-lg">Loading attempts...</p>
                 </div>
               ) : attempts.length === 0 ? (
                 <div className="text-center py-12 bg-gray-50 rounded-xl">
-                  <p className="text-gray-600 text-lg">No student attempts yet</p>
+                  <p className="text-gray-600 text-base sm:text-lg">No student attempts yet</p>
                 </div>
               ) : (
                 <>
                   {/* Filter Section */}
-                  <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-6 rounded-xl mb-8 border-2 border-gray-200">
-                    <h3 className="text-lg font-bold text-gray-900 mb-5">Filter & Sort</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-4 sm:p-6 rounded-xl mb-6 sm:mb-8 border-2 border-gray-200">
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-4 sm:mb-5">Filter & Sort</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Sort By</label>
+                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">Sort By</label>
                         <select
                           value={filterOptions.sortBy}
                           onChange={(e) => setFilterOptions(prev => ({ ...prev, sortBy: e.target.value }))}
-                          className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                          className="w-full px-2 sm:px-4 py-1.5 sm:py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition text-xs sm:text-sm"
                         >
                           <option value="marks-desc">Highest Marks</option>
                           <option value="marks-asc">Lowest Marks</option>
-                          <option value="percentage-desc">Highest Percentage</option>
-                          <option value="name-asc">A-Z Student Name</option>
+                          <option value="percentage-desc">Highest %</option>
+                          <option value="name-asc">A-Z Student</option>
                         </select>
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Filter by Status</label>
+                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">Filter Status</label>
                         <select
                           value={filterOptions.statusFilter}
                           onChange={(e) => setFilterOptions(prev => ({ ...prev, statusFilter: e.target.value }))}
-                          className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                          className="w-full px-2 sm:px-4 py-1.5 sm:py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition text-xs sm:text-sm"
                         >
-                          <option value="all">All Attempts</option>
+                          <option value="all">All</option>
                           <option value="passed">Passed</option>
                           <option value="failed">Failed</option>
                           <option value="inprogress">In Progress</option>
@@ -496,62 +496,62 @@ function AdminDashboard() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Minimum Marks</label>
+                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">Min Marks</label>
                         <input
                           type="number"
                           min="0"
                           max={selectedExam?.totalMarks || 100}
                           value={filterOptions.minMarks}
                           onChange={(e) => setFilterOptions(prev => ({ ...prev, minMarks: parseInt(e.target.value) || 0 }))}
-                          className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
-                          placeholder="Min marks"
+                          className="w-full px-2 sm:px-4 py-1.5 sm:py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition text-xs sm:text-sm"
+                          placeholder="Min"
                         />
                       </div>
                     </div>
                   </div>
 
                   {/* Results Summary */}
-                  <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
-                    <p className="text-gray-800 font-semibold">
+                  <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
+                    <p className="text-gray-800 font-semibold text-xs sm:text-base">
                       Showing <span className="text-blue-700 font-bold">{getFilteredAndSortedAttempts().length}</span> of <span className="text-blue-700 font-bold">{attempts.length}</span> attempts
                     </p>
                   </div>
 
                   {/* Table */}
                   <div className="overflow-x-auto rounded-xl border-2 border-gray-200">
-                    <table className="w-full">
+                    <table className="w-full text-xs sm:text-sm">
                       <thead className="bg-gradient-to-r from-gray-100 to-gray-200 border-b-2 border-gray-300">
                         <tr>
-                          <th className="px-6 py-4 text-left text-sm font-bold text-gray-800">Rank</th>
-                          <th className="px-6 py-4 text-left text-sm font-bold text-gray-800">Student Name</th>
-                          <th className="px-6 py-4 text-left text-sm font-bold text-gray-800">Email</th>
-                          <th className="px-6 py-4 text-left text-sm font-bold text-gray-800">Score</th>
-                          <th className="px-6 py-4 text-left text-sm font-bold text-gray-800">Percentage</th>
-                          <th className="px-6 py-4 text-left text-sm font-bold text-gray-800">Status</th>
-                          <th className="px-6 py-4 text-left text-sm font-bold text-gray-800">Attempted At</th>
+                          <th className="px-2 sm:px-6 py-2 sm:py-4 text-left font-bold text-gray-800">Rank</th>
+                          <th className="px-2 sm:px-6 py-2 sm:py-4 text-left font-bold text-gray-800">Student</th>
+                          <th className="hidden sm:table-cell px-2 sm:px-6 py-2 sm:py-4 text-left font-bold text-gray-800">Email</th>
+                          <th className="px-2 sm:px-6 py-2 sm:py-4 text-left font-bold text-gray-800">Score</th>
+                          <th className="px-2 sm:px-6 py-2 sm:py-4 text-left font-bold text-gray-800">%</th>
+                          <th className="px-2 sm:px-6 py-2 sm:py-4 text-left font-bold text-gray-800">Status</th>
+                          <th className="hidden md:table-cell px-2 sm:px-6 py-2 sm:py-4 text-left font-bold text-gray-800">Attempted</th>
                         </tr>
                       </thead>
                       <tbody>
                         {getFilteredAndSortedAttempts().length === 0 ? (
                           <tr>
-                            <td colSpan="7" className="px-6 py-8 text-center text-gray-600 font-semibold">
-                              No attempts match the selected filters
+                            <td colSpan="7" className="px-2 sm:px-6 py-4 sm:py-8 text-center text-gray-600 font-semibold">
+                              No attempts match filters
                             </td>
                           </tr>
                         ) : (
                           getFilteredAndSortedAttempts().map((attempt, index) => (
                             <tr key={index} className="border-b border-gray-200 hover:bg-blue-50 transition">
-                              <td className="px-6 py-4 text-gray-900 font-bold text-center text-lg">
+                              <td className="px-2 sm:px-6 py-2 sm:py-4 text-gray-900 font-bold text-center">
                                 {index + 1}
                                 {index === 0 && ' 🏆'}
                                 {index === 1 && ' 🥈'}
                                 {index === 2 && ' 🥉'}
                               </td>
-                              <td className="px-6 py-4 text-gray-900 font-semibold">{attempt.studentId?.name || 'Unknown'}</td>
-                              <td className="px-6 py-4 text-gray-600">{attempt.studentId?.email || 'N/A'}</td>
-                              <td className="px-6 py-4 text-gray-900 font-bold text-lg">{attempt.totalMarksObtained || 0}/{selectedExam?.totalMarks || 0}</td>
-                              <td className="px-6 py-4">
-                                <span className={`px-3 py-1 rounded-full font-bold text-sm ${
+                              <td className="px-2 sm:px-6 py-2 sm:py-4 text-gray-900 font-semibold">{attempt.studentId?.name || 'Unknown'}</td>
+                              <td className="hidden sm:table-cell px-2 sm:px-6 py-2 sm:py-4 text-gray-700 text-xs sm:text-sm">{attempt.studentId?.email || 'N/A'}</td>
+                              <td className="px-2 sm:px-6 py-2 sm:py-4 text-gray-900 font-bold text-xs sm:text-sm">{attempt.totalMarksObtained || 0}/{selectedExam?.totalMarks || 0}</td>
+                              <td className="px-2 sm:px-6 py-2 sm:py-4">
+                                <span className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full font-bold text-xs ${
                                   (attempt.percentage || 0) >= 80 ? 'bg-green-100 text-green-900' :
                                   (attempt.percentage || 0) >= 60 ? 'bg-blue-100 text-blue-900' :
                                   'bg-orange-100 text-orange-900'
@@ -559,8 +559,8 @@ function AdminDashboard() {
                                   {attempt.percentage ? attempt.percentage.toFixed(1) : 0}%
                                 </span>
                               </td>
-                              <td className="px-6 py-4">
-                                <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
+                              <td className="px-2 sm:px-6 py-2 sm:py-4">
+                                <span className={`inline-block px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold ${
                                   attempt.status === 'InProgress'
                                     ? 'bg-yellow-100 text-yellow-900'
                                     : attempt.isPassed
@@ -570,7 +570,7 @@ function AdminDashboard() {
                                   {attempt.status === 'InProgress' ? 'In Progress' : attempt.isPassed ? 'Passed' : 'Failed'}
                                 </span>
                               </td>
-                              <td className="px-6 py-4 text-gray-600 text-sm">
+                              <td className="hidden md:table-cell px-2 sm:px-6 py-2 sm:py-4 text-gray-600 text-xs sm:text-sm">
                                 {attempt.startTime ? new Date(attempt.startTime).toLocaleString() : 'N/A'}
                               </td>
                             </tr>

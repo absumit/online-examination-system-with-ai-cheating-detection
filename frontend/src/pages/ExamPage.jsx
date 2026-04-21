@@ -252,17 +252,17 @@ function ExamPage() {
   }
 
   if (loading) {
-    return <div className="flex items-center justify-center h-screen text-xl">Loading exam...</div>;
+    return <div className="flex items-center justify-center h-screen text-lg sm:text-xl">Loading exam...</div>;
   }
 
   if (!exam) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen px-4">
         <div className="text-center">
-          <p className="text-red-600 text-lg mb-4">{error || 'Exam not found'}</p>
+          <p className="text-red-600 text-base sm:text-lg mb-4">{error || 'Exam not found'}</p>
           <button
             onClick={() => navigate('/student/dashboard')}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 sm:px-6 rounded-lg text-sm sm:text-base"
           >
             Back to Dashboard
           </button>
@@ -274,32 +274,31 @@ function ExamPage() {
   const question = exam.questions[currentQuestion];
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen bg-gray-100 px-3 sm:px-4 py-4 sm:py-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">{exam.title}</h1>
-            <p className="text-gray-600">{exam.subject}</p>
+        <div className="bg-white rounded-lg shadow-md p-3 sm:p-4 mb-4 sm:mb-6">
+          <div className="mb-4 sm:mb-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-800">{exam.title}</h1>
+            <p className="text-sm sm:text-base text-gray-600">{exam.subject}</p>
           </div>
-          <div className="flex items-center gap-4">
+          
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mt-4 sm:mt-0">
             <button
               onClick={handleSubmitExam}
               disabled={submitting}
-              className="bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white font-bold py-2 px-6 rounded-lg transition"
+              className="bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white font-bold py-2 px-4 sm:px-6 rounded-lg transition text-sm sm:text-base w-full sm:w-auto"
             >
-              {submitting ? 'Submitting...' : 'Submit Exam'}
+              {submitting ? 'Submitting...' : 'Submit'}
             </button>
-            <div>
-              <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
-                isOnline
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-red-100 text-red-800'
-              }`}>
-                {isOnline ? 'Online' : 'Offline'}
-              </span>
-            </div>
-            <div className={`text-3xl font-bold ${timeLeft < 300 ? 'text-red-600' : 'text-gray-800'}`}>
+            <span className={`inline-block px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap ${
+              isOnline
+                ? 'bg-green-100 text-green-800'
+                : 'bg-red-100 text-red-800'
+            }`}>
+              {isOnline ? '◉ Online' : '◯ Offline'}
+            </span>
+            <div className={`text-xl sm:text-3xl font-bold whitespace-nowrap ${timeLeft < 300 ? 'text-red-600' : 'text-gray-800'}`}>
               {formatTime(timeLeft)}
             </div>
           </div>
@@ -307,7 +306,7 @@ function ExamPage() {
 
         {/* Notifications */}
         {notification && (
-          <div className={`p-4 rounded mb-4 border ${
+          <div className={`p-3 sm:p-4 rounded mb-4 border text-xs sm:text-sm ${
             notificationType === 'error' ? 'bg-red-100 border-red-400 text-red-700' :
             notificationType === 'warning' ? 'bg-yellow-100 border-yellow-400 text-yellow-700' :
             notificationType === 'success' ? 'bg-green-100 border-green-400 text-green-700' :
@@ -318,34 +317,34 @@ function ExamPage() {
         )}
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded mb-4 text-xs sm:text-sm">
             {error}
           </div>
         )}
 
         {/* Offline Retake Notice */}
         {!isOnline && exam && exam.allowOfflineRetake && (
-          <div className="bg-blue-50 border border-blue-300 text-blue-700 px-4 py-3 rounded mb-4">
+          <div className="bg-blue-50 border border-blue-300 text-blue-700 px-3 sm:px-4 py-2 sm:py-3 rounded mb-4 text-xs sm:text-sm">
             You are offline but can continue. Your answers will sync when you reconnect.
           </div>
         )}
 
         {!isOnline && exam && !exam.allowOfflineRetake && (
-          <div className="bg-yellow-50 border border-yellow-300 text-yellow-700 px-4 py-3 rounded mb-4">
+          <div className="bg-yellow-50 border border-yellow-300 text-yellow-700 px-3 sm:px-4 py-2 sm:py-3 rounded mb-4 text-xs sm:text-sm">
             You are offline. This exam will be auto-submitted if connection is not restored.
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Questions List */}
-          <div className="lg:col-span-1 bg-white rounded-lg shadow-md p-4">
-            <h3 className="font-bold text-gray-800 mb-4">Questions</h3>
-            <div className="space-y-2 max-h-96 overflow-y-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
+          {/* Questions List - Responsive */}
+          <div className="lg:col-span-1 bg-white rounded-lg shadow-md p-3 sm:p-4">
+            <h3 className="font-bold text-gray-800 mb-3 sm:mb-4 text-sm sm:text-base">Questions</h3>
+            <div className="space-y-1 sm:space-y-2 max-h-96 overflow-y-auto">
               {exam.questions.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentQuestion(idx)}
-                  className={`w-full px-3 py-2 rounded-lg font-semibold transition relative ${
+                  className={`w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg font-semibold transition relative text-xs sm:text-sm ${
                     currentQuestion === idx
                       ? 'bg-blue-500 text-white'
                       : (Array.isArray(answers[idx]) ? answers[idx].length > 0 : answers[idx])
@@ -363,23 +362,23 @@ function ExamPage() {
           </div>
 
           {/* Question Panel */}
-          <div className="lg:col-span-3 bg-white rounded-lg shadow-md p-6">
-            <div className="mb-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-2">
+          <div className="lg:col-span-3 bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <div className="mb-4 sm:mb-6">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">
                 Question {currentQuestion + 1} of {exam.questions.length}
               </h2>
-              <p className="text-sm text-gray-600">Marks: {question.marks}</p>
+              <p className="text-xs sm:text-sm text-gray-600">Marks: {question.marks}</p>
             </div>
 
             <div className="mb-6">
-              <p className="text-lg text-gray-800 font-semibold mb-4">{question.questionText}</p>
+              <p className="text-base sm:text-lg text-gray-800 font-semibold mb-3 sm:mb-4">{question.questionText}</p>
               {question.multipleAnswersAllowed && (
-                <p className="text-sm text-blue-600 mb-3 font-semibold">⚠️ This question has multiple correct answers - select all that apply</p>
+                <p className="text-xs sm:text-sm text-blue-600 mb-3 font-semibold">⚠️ Multiple correct answers - select all that apply</p>
               )}
 
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {question.options.map((option, idx) => (
-                  <label key={idx} className="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 transition">
+                  <label key={idx} className="flex items-start p-2 sm:p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 transition text-sm sm:text-base">
                     <input
                       type={question.multipleAnswersAllowed ? "checkbox" : "radio"}
                       name={`question-${currentQuestion}`}
@@ -394,7 +393,7 @@ function ExamPage() {
                           ? handleMultipleAnswerChange(option)
                           : handleAnswerChange(option)
                       }
-                      className="mr-3 w-4 h-4"
+                      className="mr-3 w-4 h-4 mt-1 flex-shrink-0"
                     />
                     <span className="text-gray-800">{option}</span>
                   </label>
@@ -403,18 +402,18 @@ function ExamPage() {
             </div>
 
             {/* Navigation */}
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <button
                 onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
                 disabled={currentQuestion === 0}
-                className="bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300 text-white font-bold py-2 px-6 rounded-lg transition"
+                className="bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300 text-white font-bold py-2 px-4 sm:px-6 rounded-lg transition text-sm sm:text-base w-full sm:w-auto"
               >
                 ← Previous
               </button>
               <button
                 onClick={() => setCurrentQuestion(Math.min(exam.questions.length - 1, currentQuestion + 1))}
                 disabled={currentQuestion === exam.questions.length - 1}
-                className="ml-auto bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300 text-white font-bold py-2 px-6 rounded-lg transition"
+                className="bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300 text-white font-bold py-2 px-4 sm:px-6 rounded-lg transition text-sm sm:text-base w-full sm:w-auto sm:ml-auto"
               >
                 Next →
               </button>
