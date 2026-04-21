@@ -53,105 +53,106 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md max-h-screen overflow-y-auto">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Register</h2>
-        
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-light text-gray-900 mb-2">Create Account</h1>
+          <p className="text-gray-500">Sign up to get started with exams</p>
+        </div>
+
+        {/* Error Message */}
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-3">
+        {/* Registration Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700 font-semibold mb-1 text-sm">Full Name</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500"
-              placeholder="Enter your name"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+              placeholder="Full Name"
               required
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold mb-1 text-sm">Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500"
-              placeholder="Enter your email"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+              placeholder="Email address"
               required
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold mb-1 text-sm">Password</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500"
-              placeholder="Enter your password"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+              placeholder="Password (min 6 characters)"
               required
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold mb-1 text-sm">Age</label>
             <input
               type="number"
               name="age"
               value={formData.age}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500"
-              placeholder="Enter your age"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+              placeholder="Age"
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold mb-1 text-sm">Department</label>
             <input
               type="text"
               name="department"
               value={formData.department}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500"
-              placeholder="Enter your department"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+              placeholder="Department"
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold mb-1 text-sm">Enrollment Number</label>
             <input
               type="text"
               name="enrollmentNumber"
               value={formData.enrollmentNumber}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-500"
-              placeholder="Enter your enrollment number"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+              placeholder="Enrollment Number"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition disabled:bg-gray-400 mt-4"
+            className="w-full bg-blue-600 text-white font-medium py-3 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed mt-2"
           >
-            {loading ? 'Registering...' : 'Register'}
+            {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 
-        <p className="text-center text-gray-600 mt-4 text-sm">
+        {/* Footer */}
+        <p className="text-center text-gray-600 text-sm mt-8">
           Already have an account?{' '}
-          <Link to="/login" className="text-green-500 hover:text-green-600 font-semibold">
-            Login here
+          <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium transition">
+            Sign in
           </Link>
         </p>
       </div>

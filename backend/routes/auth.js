@@ -7,6 +7,9 @@ const inputvalidator = require("../utils/validators");
 const jwt = require("jsonwebtoken");
 const verifyToken = require('../middleware/verify');
 const redisClient = require('../config/redis');
+const { OAuth2Client } = require('google-auth-library');
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
@@ -79,6 +82,79 @@ router.post('/login', async (req, res) => {
   }
   catch (err) {
     res.status(400).json({ message: err.message || "Login failed", success: false });
+  }
+});
+
+// Google Login Route
+router.post('/google-login', async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({ message: "Google token is required", success: false });
+    }
+
+    console.log("Attempting to verify Google token...");
+    console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+
+    // Verify the Google token
+    let ticket;
+    try {
+      ticket = await googleClient.verifyIdToken({
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID
+      });
+    } catch (tokenErr) {
+      console.error("Token verification error:", tokenErr.message);
+      return res.status(400).json({ message: "Invalid Google token: " + tokenErr.message, success: false });
+    }
+
+    const payload = ticket.getPayload();
+    const { email, name, picture } = payload;
+
+    console.log("Google payload received - Email:", email, "Name:", name);
+
+    if (!email) {
+      return res.status(400).json({ message: "Email not provided by Google", success: false });
+    }
+
+    // Find or create user
+    let dbUser = await user.findOne({ email });
+
+    if (!dbUser) {
+      console.log("Creating new user with Google account...");
+      // Create new user with student role (Google users register as students)
+      const hashedPassword = await hashing(Math.random().toString(36).slice(-10));
+      dbUser = await user.create({
+        name: name || email.split('@')[0],
+        email,
+        password: hashedPassword,
+        role: 'student'
+      });
+      console.log("New user created:", dbUser._id);
+    } else {
+      console.log("Existing user found:", dbUser._id);
+    }
+
+    // Create JWT token
+    const jwtToken = jwt.sign({ email: dbUser.email }, process.env.JWT_KEY, { expiresIn: TOKEN_TTL });
+    res.cookie("token", jwtToken, { ...COOKIE_OPTIONS, maxAge: TOKEN_TTL_MS });
+
+    res.json({
+      message: "Google login successful",
+      success: true,
+      user: {
+        id: dbUser._id,
+        email: dbUser.email,
+        role: dbUser.role,
+        name: dbUser.name
+      }
+    });
+  }
+  catch (err) {
+    console.error("Google login error:", err.message);
+    console.error("Stack trace:", err.stack);
+    res.status(400).json({ message: err.message || "Google login failed", success: false });
   }
 });
 

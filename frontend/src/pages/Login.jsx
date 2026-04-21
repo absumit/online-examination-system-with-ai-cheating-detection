@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { loginUser } from '../utils/api';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { loginUser, googleLogin } from '../utils/api';
 import { AuthContext } from '../context/AuthContext';
 
 function Login() {
@@ -40,59 +41,107 @@ function Login() {
     }
   };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError('');
+    setLoading(true);
+    try {
+      const response = await googleLogin(credentialResponse.credential);
+      login(response.data.user);
+      
+      if (response.data.user.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/student/dashboard');
+      }
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || 'Google login failed';
+      setError(errorMsg);
+      console.error('Google login error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Login</h2>
-        
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          {/* Header */}
+          <div className="text-center mb-10">
+            <h1 className="text-4xl font-light text-gray-900 mb-2">Welcome Back</h1>
+            <p className="text-gray-500">Sign in to your exam account</p>
           </div>
-        )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-              placeholder="Enter your email"
-              required
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
+              {error}
+            </div>
+          )}
+
+          {/* Login Form */}
+          <form onSubmit={handleSubmit} className="space-y-5 mb-8">
+            <div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+                placeholder="Email address"
+                required
+              />
+            </div>
+
+            <div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-gray-900 placeholder-gray-500 transition"
+                placeholder="Password"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 text-white font-medium py-3 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="flex items-center mb-8">
+            <div className="flex-1 border-t border-gray-200"></div>
+            <span className="px-4 text-gray-500 text-sm">or continue with</span>
+            <div className="flex-1 border-t border-gray-200"></div>
+          </div>
+
+          {/* Google Login */}
+          <div className="flex justify-center mb-8">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => setError('Google login failed')}
+              theme="outline"
+              size="large"
+              text="signin"
             />
           </div>
 
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-              placeholder="Enter your password"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition disabled:bg-gray-400"
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
-
-        <p className="text-center text-gray-600 mt-6">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-blue-500 hover:text-blue-600 font-semibold">
-            Register here
-          </Link>
-        </p>
+          {/* Footer */}
+          <p className="text-center text-gray-600 text-sm">
+            Don't have an account?{' '}
+            <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium transition">
+              Create one
+            </Link>
+          </p>
+        </div>
       </div>
-    </div>
+    </GoogleOAuthProvider>
   );
 }
 

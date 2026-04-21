@@ -10,6 +10,7 @@ const apiClient = axios.create({
 // Auth APIs
 export const registerUser = (userData) => apiClient.post('/auth/register', userData);
 export const loginUser = (email, password) => apiClient.post('/auth/login', { email, password });
+export const googleLogin = (token) => apiClient.post('/auth/google-login', { token });
 export const logoutUser = () => apiClient.get('/auth/logout');
 export const getCurrentUser = () => apiClient.get('/auth/me');
 
